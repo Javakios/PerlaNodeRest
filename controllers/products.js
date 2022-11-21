@@ -85,21 +85,13 @@ exports.getProducts = (req,res,next)=>{
                 'texnikos_kodikos':products[0][i].p_code_texniko,
 
 
-            }
-
-        }
-        
+        }} 
         res.status(200).json({
             message:"All Products",
             products: returnProds
         });
-
     }).catch(err=>{
-
-        if(!err.statusCode){
-            err.statusCode = 500
-        }
+        if(!err.statusCode) err.statusCode = 500
         next(err);
-
     })
 }
