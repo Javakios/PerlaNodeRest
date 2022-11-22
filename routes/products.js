@@ -12,4 +12,5 @@ router.delete('/deleteOffer',productsController.deleteOffer);
 router.get('/favorites',productsController.favorites)
 router.get('/fetchCartItems',productsController.fetchCartItems);
 router.get('/seeEarlier',productsController.seeEarlier);
+router.get('/findMosquiProduct',productsController.findMosquiProduct);
 module.exports = router;

@@ -569,23 +569,61 @@ exports.seeEarlier = async (req, res, next) => {
         `SELECT min(time_stamp) from see_earlier WHERE c_trdr= ${trdr} `
       );
       min = min[0][0]["min(time_stamp)"];
-      let deleteProd = await database.execute(`DELETE FROM see_earlier WHERE time_stamp=${min}`);
-      if(!deleteProd[0].affectedRows)
-        {
-            const err = "An Error Occured";
-            next(err); 
-        }
-        let insert = await database.execute(`INSERT INTO see_earlier (c_trdr,p_mtrl,time_stamp) VALUES(${trdr},${mtrl},${time_stamp})`);
-        if(!insert[0].affectedRows)
-        {
-            const err = "An Error Occured";
-            next(err); 
-        }
+      let deleteProd = await database.execute(
+        `DELETE FROM see_earlier WHERE time_stamp=${min}`
+      );
+      if (!deleteProd[0].affectedRows) {
+        const err = "An Error Occured";
+        next(err);
+      }
+      let insert = await database.execute(
+        `INSERT INTO see_earlier (c_trdr,p_mtrl,time_stamp) VALUES(${trdr},${mtrl},${time_stamp})`
+      );
+      if (!insert[0].affectedRows) {
+        const err = "An Error Occured";
+        next(err);
+      }
     }
   }
   if (bad) {
     res.status(404).json({ message: "Fill The required Fields" });
+  } else {
+    res.status(200).json({ message: "Product Added" });
+  }
+};
+
+exports.findMosquiProduct = async (req, res, next) => {
+  let bad = false;
+  if (
+    !req.body.subcategory ||
+    !req.body.fabric ||
+    !req.body.profile ||
+    !req.body.color ||
+    !req.body.width ||
+    !req.body.height
+  ) {
+    bad = true;
   }else{
-    res.status(200).json({message :"Product Added"});
+
+    let subcategory = req.body.subcategory;
+    let fabric = req.body.fabric;
+    let profile = req.body.profile;
+    let color = req.body.color;
+    let width = req.body.width;
+    let height = req.body.height;
+    let findProd = await database.execute(
+      `SELECT * FROM products WHERE p_subcategory=${subcategory} AND color_fabric_id=${fabric} AND color_profile_id=${profile}  and (min_width < ${width} and max_width > ${width}) and (min_height < ${height} and max_height>${height})`
+    );
+    if (findProd[0].length == 0) {
+      res.status(404).json({ message: "No Product Found" });
+    }else{
+      console.log(findProd[0]);
+        res.status(200).json({ message: "Product Found", product: await this.getSingelProduct(findProd[0][0].p_mtrl)});
+    }
+
+  }
+
+  if (bad) {
+    res.status(404).json({ message: "Fill The Required Fields" });
   }
 };
