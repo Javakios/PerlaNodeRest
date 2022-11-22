@@ -8,6 +8,6 @@ const productsController = require('../controllers/products');
 router.post('/getAllOffers',productsController.getOffers);
 router.get('/getProducts',productsController.getProducts);
 router.post('/getAllproductsRelated',productsController.getProductsRelated);
-router.post('/deleteOffer',productsController.delteOffer);
+router.post('/deleteOffer',productsController.deleteOffer);
 
 module.exports = router;
