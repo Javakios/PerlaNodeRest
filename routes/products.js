@@ -11,5 +11,5 @@ router.get('/getAllproductsRelated',productsController.getProductsRelated);
 router.delete('/deleteOffer',productsController.deleteOffer);
 router.get('/favorites',productsController.favorites)
 router.get('/fetchCartItems',productsController.fetchCartItems);
-
+router.get('/seeEarlier',productsController.seeEarlier);
 module.exports = router;

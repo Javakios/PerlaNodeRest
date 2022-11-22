@@ -58,7 +58,7 @@ exports.getProducts = (req, res, next) => {
           texnikos_kodikos: products[0][i].p_code_texniko,
         };
       }
-      database.end();
+      // // // database.end();
       res.status(200).json({
         message: "All Products",
         products: returnProds,
@@ -138,7 +138,7 @@ exports.getProductsRelated = async (req, res, next) => {
       };
     }
   }
-  database.end();
+  // // database.end();
   if (bad) {
     res.status(404).json({ message: "Fill The Required Fields" });
   } else {
@@ -269,7 +269,7 @@ exports.deleteOffer = async (req, res, next) => {
         texnikos_kodikos: products[0][i].p_code_texniko,
       };
     }
-    database.end();
+    // // database.end();
   }
 
   if (bad) {
@@ -415,7 +415,6 @@ exports.getSingelProduct = async (mtrl) => {
     texnikos_kodikos: product[0][0].p_code_texniko,
   };
 
-  
   return returnProd;
 };
 
@@ -425,113 +424,168 @@ exports.fetchCartItems = async (req, res, next) => {
   if (!req.body.trdr) {
     bad = true;
   } else {
-        let trdr = req.body.trdr;
-        let cartItems = await database.execute(`SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`);
-        for(let i = 0 ; i < cartItems[0].length ; i++){
-
-            cartItem.push( await this.getSingelCartitem(cartItems[0][i].p_mtrl,cartItems[0][i].p_qty,cartItems[0][i].group_id,cartItems[0][i].p_wholesale,cartItems[0][i].p_disc));
-
-        }
-
+    let trdr = req.body.trdr;
+    let cartItems = await database.execute(
+      `SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`
+    );
+    for (let i = 0; i < cartItems[0].length; i++) {
+      cartItem.push(
+        await this.getSingelCartitem(
+          cartItems[0][i].p_mtrl,
+          cartItems[0][i].p_qty,
+          cartItems[0][i].group_id,
+          cartItems[0][i].p_wholesale,
+          cartItems[0][i].p_disc
+        )
+      );
+    }
   }
 
   if (bad) {
     res.status(404).json({ message: "Fill The required Fields" });
-  }else{
-    
+  } else {
     res.status(200).json({
-
-        message: "Cart Items",
-        products: cartItem,
-
-    })
+      message: "Cart Items",
+      products: cartItem,
+    });
   }
 };
 
-
-exports.hasOffer = (products,i) =>{
-    if (products[0][i].p_wholesale_price != products[0][i].p_offer)
-    return true;
+exports.hasOffer = (products, i) => {
+  if (products[0][i].p_wholesale_price != products[0][i].p_offer) return true;
   else return false;
-}
-exports.homaepageOffer = async (products,i) =>{
-
-    let homePageOffer = await database.execute(
-        `SELECT * FROM products_offer WHERE product_mtrl= ${products[0][i].p_mtrl}`
-      );
-      if (homePageOffer[0].length != 0) return true;
-      else return false;
-}
-exports.getOtherImages = async(mtrl)=>{
-    let images = await database.execute(
-        `SELECT * FROM product_images WHERE p_mtrl=${mtrl}`
-      );
-      let otherImages = [];
-      for (let i = 0; i < images[0].length; i++) {
-        otherImages[i] = {
-          img: images[0][i].p_image,
-        };
-      }
-      return otherImages;
-}
-exports.getSingelCartitem = async (mtrl,qty,group_id,wholesale,discount) => {
-        console.log("PEOS");
-        let product = await database.execute(
-        `SELECT * FROM products WHERE p_mtrl=${mtrl}`
-      );
-      let hasOffer = false;
-      let homeOffer = false;
-      returnProd = {};
-      let images = await database.execute(
-        `SELECT * FROM product_images WHERE p_mtrl=${mtrl}`
-      );
-      let otherImages = [];
-      for (let i = 0; i < images[0].length; i++) {
-        otherImages[i] = {
-          img: images[0][i].p_image,
-        };
-      }
-      if (product[0][0].p_dicount !=0) hasOffer = true;
-      else hasOffer = false;
-      let homePageOffer = await database.execute(
-        `SELECT * FROM products_offer WHERE product_mtrl= ${mtrl}`
-      );
-      if (homePageOffer[0].length != 0) homeOffer = true;
-      else homeOffer = false;
-      returnProd = {
-        mtrl: product[0][0].p_mtrl,
-        omada: product[0][0].p_omada,
-        name: product[0][0].p_name,
-        name1: product[0][0].p_name1,
-        retailPrice: product[0][0].p_retail_price,
-        wholesalePrice: wholesale,
-        offer: product[0][0].p_offer,
-        hasOffer: hasOffer,
-        homePageOffer: homeOffer,
-        qty : qty,
-        discount: discount,
-        group_id: group_id,
-        code: product[0][0].p_kod,
-        description_eng: product[0][0].p_desc_eng,
-        stock: product[0][0].p_stock,
-        diathesima: product[0][0].p_diathesima,
-        desmeumena: product[0][0].p_desmeumena,
-        category: product[0][0].p_category,
-        subcategory: product[0][0].p_subcategory,
-        image: product[0][0].p_image,
-        otherImages: otherImages,
-        description: product[0][0].p_desc,
-        pdf: product[0][0].p_pdf,
-        video: product[0][0].p_yt_vid,
-        data_sheet: product[0][0].p_data_sheet,
-        data_sheet_eng: product[0][0].data_sheet_eng,
-        onoma: product[0][0].onoma_product,
-        onoma_eng: product[0][0].onoma_product_eng,
-        kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
-        texnikos_kodikos: product[0][0].p_code_texniko,
-      };
-    
-      console.log(returnProd);
-      return returnProd;
+};
+exports.homaepageOffer = async (products, i) => {
+  let homePageOffer = await database.execute(
+    `SELECT * FROM products_offer WHERE product_mtrl= ${products[0][i].p_mtrl}`
+  );
+  if (homePageOffer[0].length != 0) return true;
+  else return false;
+};
+exports.getOtherImages = async (mtrl) => {
+  let images = await database.execute(
+    `SELECT * FROM product_images WHERE p_mtrl=${mtrl}`
+  );
+  let otherImages = [];
+  for (let i = 0; i < images[0].length; i++) {
+    otherImages[i] = {
+      img: images[0][i].p_image,
     };
+  }
+  return otherImages;
+};
+exports.getSingelCartitem = async (
+  mtrl,
+  qty,
+  group_id,
+  wholesale,
+  discount
+) => {
+  console.log("PEOS");
+  let product = await database.execute(
+    `SELECT * FROM products WHERE p_mtrl=${mtrl}`
+  );
+  let hasOffer = false;
+  let homeOffer = false;
+  returnProd = {};
+  let images = await database.execute(
+    `SELECT * FROM product_images WHERE p_mtrl=${mtrl}`
+  );
+  let otherImages = [];
+  for (let i = 0; i < images[0].length; i++) {
+    otherImages[i] = {
+      img: images[0][i].p_image,
+    };
+  }
+  if (product[0][0].p_dicount != 0) hasOffer = true;
+  else hasOffer = false;
+  let homePageOffer = await database.execute(
+    `SELECT * FROM products_offer WHERE product_mtrl= ${mtrl}`
+  );
+  if (homePageOffer[0].length != 0) homeOffer = true;
+  else homeOffer = false;
+  returnProd = {
+    mtrl: product[0][0].p_mtrl,
+    omada: product[0][0].p_omada,
+    name: product[0][0].p_name,
+    name1: product[0][0].p_name1,
+    retailPrice: product[0][0].p_retail_price,
+    wholesalePrice: wholesale,
+    offer: product[0][0].p_offer,
+    hasOffer: hasOffer,
+    homePageOffer: homeOffer,
+    qty: qty,
+    discount: discount,
+    group_id: group_id,
+    code: product[0][0].p_kod,
+    description_eng: product[0][0].p_desc_eng,
+    stock: product[0][0].p_stock,
+    diathesima: product[0][0].p_diathesima,
+    desmeumena: product[0][0].p_desmeumena,
+    category: product[0][0].p_category,
+    subcategory: product[0][0].p_subcategory,
+    image: product[0][0].p_image,
+    otherImages: otherImages,
+    description: product[0][0].p_desc,
+    pdf: product[0][0].p_pdf,
+    video: product[0][0].p_yt_vid,
+    data_sheet: product[0][0].p_data_sheet,
+    data_sheet_eng: product[0][0].data_sheet_eng,
+    onoma: product[0][0].onoma_product,
+    onoma_eng: product[0][0].onoma_product_eng,
+    kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
+    texnikos_kodikos: product[0][0].p_code_texniko,
+  };
 
+  console.log(returnProd);
+  return returnProd;
+};
+
+exports.seeEarlier = async (req, res, next) => {
+  let bad = false;
+  if (!req.body.trdr || !req.body.mtrl) {
+    bad = true;
+  } else {
+    let mtrl = req.body.mtrl;
+    let trdr = req.body.trdr;
+    let time_stamp =
+      new Date().getFullYear() +
+      "" +
+      new Date().getMonth() +
+      "" +
+      new Date().getDay() +
+      "" +
+      new Date().getHours() +
+      "" +
+      new Date().getMinutes() +
+      "" +
+      new Date().getSeconds();
+
+    let findProd = await database.execute(
+      `SELECT * FROM see_earlier WHERE c_trdr=${trdr}`
+    );
+    if (findProd[0].length >= 6) {
+      let min = await database.execute(
+        `SELECT min(time_stamp) from see_earlier WHERE c_trdr= ${trdr} `
+      );
+      min = min[0][0]["min(time_stamp)"];
+      let deleteProd = await database.execute(`DELETE FROM see_earlier WHERE time_stamp=${min}`);
+      if(!deleteProd[0].affectedRows)
+        {
+            const err = "An Error Occured";
+            next(err); 
+        }
+        let insert = await database.execute(`INSERT INTO see_earlier (c_trdr,p_mtrl,time_stamp) VALUES(${trdr},${mtrl},${time_stamp})`);
+        if(!insert[0].affectedRows)
+        {
+            const err = "An Error Occured";
+            next(err); 
+        }
+    }
+  }
+  if (bad) {
+    res.status(404).json({ message: "Fill The required Fields" });
+  }else{
+    res.status(200).json({message :"Product Added"});
+  }
+};
