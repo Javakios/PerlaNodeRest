@@ -7,7 +7,9 @@ const productsController = require('../controllers/products');
 
 router.post('/getAllOffers',productsController.getOffers);
 router.get('/getProducts',productsController.getProducts);
-router.post('/getAllproductsRelated',productsController.getProductsRelated);
-router.post('/deleteOffer',productsController.deleteOffer);
+router.get('/getAllproductsRelated',productsController.getProductsRelated);
+router.delete('/deleteOffer',productsController.deleteOffer);
+router.get('/favorites',productsController.favorites)
+router.get('/fetchCartItems',productsController.fetchCartItems);
 
 module.exports = router;
