@@ -13,4 +13,5 @@ router.get('/favorites',productsController.favorites)
 router.get('/fetchCartItems',productsController.fetchCartItems);
 router.get('/seeEarlier',productsController.seeEarlier);
 router.get('/findMosquiProduct',productsController.findMosquiProduct);
+router.get('/findRelatedProducts',productsController.findRelatedProducts);
 module.exports = router;

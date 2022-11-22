@@ -603,8 +603,7 @@ exports.findMosquiProduct = async (req, res, next) => {
     !req.body.height
   ) {
     bad = true;
-  }else{
-
+  } else {
     let subcategory = req.body.subcategory;
     let fabric = req.body.fabric;
     let profile = req.body.profile;
@@ -616,14 +615,41 @@ exports.findMosquiProduct = async (req, res, next) => {
     );
     if (findProd[0].length == 0) {
       res.status(404).json({ message: "No Product Found" });
-    }else{
+    } else {
       console.log(findProd[0]);
-        res.status(200).json({ message: "Product Found", product: await this.getSingelProduct(findProd[0][0].p_mtrl)});
+      res
+        .status(200)
+        .json({
+          message: "Product Found",
+          product: await this.getSingelProduct(findProd[0][0].p_mtrl),
+        });
     }
-
   }
 
   if (bad) {
     res.status(404).json({ message: "Fill The Required Fields" });
+  }
+};
+
+exports.findRelatedProducts = async (req, res, next) => {
+  let bad = false;
+  let related_mtrl;
+  let returnProd = [];
+  if (!req.body.product_mtrl) {
+    bad = true;
+  }else{
+    let mtrl = req.body.product_mtrl;
+    let scope1 = await database.execute(`select * from related_products where mtrl=${mtrl} and scope=1`);
+    console.log(scope1[0]);
+    for(let i = 0 ; i < scope1[0].length;i++){
+        returnProd.push(await this.getSingelProduct(scope1[0][i].related_mtrl));
+    }
+    
+  }
+  if (bad) {
+    res.status(404).json({ message: "Fill The Required Fields" });
+  }else{
+    res.status(200).json({ message: "Related Products Found",products:returnProd });
+  
   }
 };
