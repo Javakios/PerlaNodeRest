@@ -6,7 +6,7 @@ const path = require('path');
 // routes 
 
 const productsRoute = require('./routes/products');
-
+const categoriesRoute = require('./routes/categories');
 // initialize server
 
 const app = express();
@@ -25,7 +25,7 @@ app.use((req,res,next)=>{
 })
 // products routes
 app.use('/products',productsRoute); 
-
+app.use('/categories',categoriesRoute);
 
 app.use((error,req,res,next)=>{
 

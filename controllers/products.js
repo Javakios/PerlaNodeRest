@@ -1,4 +1,3 @@
-const e = require("express");
 const database = require("../db");
 
 // Get All Products
