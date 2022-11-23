@@ -208,10 +208,10 @@ exports.getOffers = async (req, res, next) => {
 exports.deleteOffer = async (req, res, next) => {
   let bad = false;
   let returnProds = [];
-  if (!req.body.mtrl) {
+  if (!req.query.mtrl) {
     bad = true;
   } else {
-    let mtrl = req.body.mtrl;
+    let mtrl = req.query.mtrl;
 
     let hasOffer = false;
     let homeOffer = false;
