@@ -632,10 +632,10 @@ exports.findRelatedProducts = async (req, res, next) => {
   let bad = false;
   let related_mtrl;
   let returnProd = [];
-  if (!req.body.product_mtrl) {
+  if (!req.query.product_mtrl) {
     bad = true;
   } else {
-    let mtrl = req.body.product_mtrl;
+    let mtrl = req.query.product_mtrl;
     let scope1 = await database.execute(
       `select * from related_products where mtrl=${mtrl} and scope=1`
     );
