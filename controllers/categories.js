@@ -30,7 +30,7 @@ exports.getCategories = async (req, res, next) => {
         returnCat.push({
             name: main_cat[0][i].cat_name,
             id: main_cat[0][i].cat_id,
-            sub: returnSub
+            subcategoris: returnSub
         })
       }
       res.status(200).json({ message: "categories found", categories: returnCat });
