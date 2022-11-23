@@ -689,7 +689,7 @@ exports.clearAll = (req, res, next, trdr) => {
 };
 exports.clearOne = async (req,res,next,trdr)=>{
 
-    database.execute(`delete from products_cart where p_trdr=${trdr} and group_id=${req.body.group_id}`)
+    database.execute(`delete from products_cart where p_trdr=${trdr} and group_id=${req.query.group_id}`)
     .then(results=>{
         this.fetchCartItems(req, res, next)
     }).catch(err=>{
