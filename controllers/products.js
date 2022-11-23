@@ -420,10 +420,10 @@ exports.getSingelProduct = async (mtrl) => {
 exports.fetchCartItems = async (req, res, next) => {
   let bad = false;
   let cartItem = [];
-  if (!req.body.trdr) {
+  if (!req.query.trdr) {
     bad = true;
   } else {
-    let trdr = req.body.trdr;
+    let trdr = req.query.trdr;
     let cartItems = await database.execute(
       `SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`
     );
