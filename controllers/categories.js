@@ -3,10 +3,10 @@ const database = require("../db");
 exports.getCategories = async (req, res, next) => {
     let returnCat = [];
     let returnSub = [];
-  if (!req.body.category) {
+  if (!req.query.category) {
     res.status(422).json({ message: "category is required" });
   } else {
-    const category = req.body.category;
+    const category = req.query.category;
     let main_cat =await database.execute(
       "SELECT * FROM categories WHERE cat_id = ?",
       [category]
