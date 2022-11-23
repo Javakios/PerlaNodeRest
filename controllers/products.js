@@ -655,14 +655,14 @@ exports.findRelatedProducts = async (req, res, next) => {
 
 exports.removeCartItem = async (req, res, next) => {
   let bad = false;
-  if (!req.body.mtrl || !req.body.trdr || !req.body.id || !req.body.group_id) {
+  if (!req.query.mtrl || !req.query.trdr || !req.query.id || !req.query.group_id) {
     res.status(404).json({ message: "Fill The Required Fields" });
   } else {
     console.log("hello")
-    let mtrl = req.body.mtrl;
-    let trdr = req.body.trdr;
-    let id = req.body.id;
-    let group_id = req.body.group_id;
+    let mtrl = req.query.mtrl;
+    let trdr = req.query.trdr;
+    let id = req.query.id;
+    let group_id = req.query.group_id;
     console.log(id)
     switch (id) {
       case "1":
