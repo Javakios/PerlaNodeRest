@@ -542,11 +542,11 @@ exports.getSingelCartitem = async (
 
 exports.seeEarlier = async (req, res, next) => {
   let bad = false;
-  if (!req.body.trdr || !req.body.mtrl) {
+  if (!req.query.trdr || !req.body.mtrl) {
     bad = true;
   } else {
-    let mtrl = req.body.mtrl;
-    let trdr = req.body.trdr;
+    let mtrl = req.query.mtrl;
+    let trdr = req.query.trdr;
     let time_stamp =
       new Date().getFullYear() +
       "" +
