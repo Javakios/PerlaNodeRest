@@ -73,10 +73,10 @@ exports.getProducts = (req, res, next) => {
 exports.getProductsRelated = async (req, res, next) => {
   let returnProds = [];
   let bad = false;
-  if (!req.body.mtrl) {
+  if (!req.query.mtrl) {
     bad = true;
   } else {
-    let mtrl = req.body.mtrl;
+    let mtrl = req.query.mtrl;
     console.log(
       `SELECT p_related_mtrl FROM product_page_related WHERE p_mtrl=${mtrl}`
     );
