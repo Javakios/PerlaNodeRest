@@ -594,21 +594,21 @@ exports.seeEarlier = async (req, res, next) => {
 exports.findMosquiProduct = async (req, res, next) => {
   let bad = false;
   if (
-    !req.body.subcategory ||
-    !req.body.fabric ||
-    !req.body.profile ||
-    !req.body.color ||
-    !req.body.width ||
-    !req.body.height
+    !req.query.subcategory ||
+    !req.query.fabric ||
+    !req.query.profile ||
+    !req.query.color ||
+    !req.query.width ||
+    !req.query.height
   ) {
     bad = true;
   } else {
-    let subcategory = req.body.subcategory;
-    let fabric = req.body.fabric;
-    let profile = req.body.profile;
-    let color = req.body.color;
-    let width = req.body.width;
-    let height = req.body.height;
+    let subcategory = req.query.subcategory;
+    let fabric = req.query.fabric;
+    let profile = req.query.profile;
+    let color = req.query.color;
+    let width = req.query.width;
+    let height = req.query.height;
     let findProd = await database.execute(
       `SELECT * FROM products WHERE p_subcategory=${subcategory} AND color_fabric_id=${fabric} AND color_profile_id=${profile}  and (min_width < ${width} and max_width > ${width}) and (min_height < ${height} and max_height>${height})`
     );
