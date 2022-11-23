@@ -616,12 +616,10 @@ exports.findMosquiProduct = async (req, res, next) => {
       res.status(404).json({ message: "No Product Found" });
     } else {
       console.log(findProd[0]);
-      res
-        .status(200)
-        .json({
-          message: "Product Found",
-          product: await this.getSingelProduct(findProd[0][0].p_mtrl),
-        });
+      res.status(200).json({
+        message: "Product Found",
+        product: await this.getSingelProduct(findProd[0][0].p_mtrl),
+      });
     }
   }
 
@@ -636,19 +634,69 @@ exports.findRelatedProducts = async (req, res, next) => {
   let returnProd = [];
   if (!req.body.product_mtrl) {
     bad = true;
-  }else{
+  } else {
     let mtrl = req.body.product_mtrl;
-    let scope1 = await database.execute(`select * from related_products where mtrl=${mtrl} and scope=1`);
+    let scope1 = await database.execute(
+      `select * from related_products where mtrl=${mtrl} and scope=1`
+    );
     console.log(scope1[0]);
-    for(let i = 0 ; i < scope1[0].length;i++){
-        returnProd.push(await this.getSingelProduct(scope1[0][i].related_mtrl));
+    for (let i = 0; i < scope1[0].length; i++) {
+      returnProd.push(await this.getSingelProduct(scope1[0][i].related_mtrl));
     }
-    
   }
   if (bad) {
     res.status(404).json({ message: "Fill The Required Fields" });
-  }else{
-    res.status(200).json({ message: "Related Products Found",products:returnProd });
-  
+  } else {
+    res
+      .status(200)
+      .json({ message: "Related Products Found", products: returnProd });
   }
 };
+
+exports.removeCartItem = async (req, res, next) => {
+  let bad = false;
+  if (!req.body.mtrl || !req.body.trdr || !req.body.id || !req.body.group_id) {
+    res.status(404).json({ message: "Fill The Required Fields" });
+  } else {
+    console.log("hello")
+    let mtrl = req.body.mtrl;
+    let trdr = req.body.trdr;
+    let id = req.body.id;
+    let group_id = req.body.group_id;
+    console.log(id)
+    switch (id) {
+      case "1":
+        this.clearAll(req,res,next,trdr);
+        break;
+      case "2":
+        console.log("hello")
+        this.clearOne(req,res,next,trdr);
+        break;
+    }
+  }
+};
+exports.clearAll = (req, res, next, trdr) => {
+
+    database.execute(`delete from products_cart where p_trdr=${trdr}`)
+    .then(results=>{
+        res.status(200).json({message:"Cart Cleared",products:[]});
+    }).catch(err=>{
+        if(!err.statusCode){
+            err.statusCode=500;
+        }
+        next(err);
+    })
+};
+exports.clearOne = async (req,res,next,trdr)=>{
+
+    database.execute(`delete from products_cart where p_trdr=${trdr} and group_id=${req.body.group_id}`)
+    .then(results=>{
+        this.fetchCartItems(req, res, next)
+    }).catch(err=>{
+        if(!err.statusCode){
+            err.statusCode=500;
+        }
+        next(err);
+    })    
+
+}
