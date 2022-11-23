@@ -283,12 +283,12 @@ exports.deleteOffer = async (req, res, next) => {
 
 exports.favorites = async (req, res, next) => {
   let bad = false;
-  if (!req.body.mtrl || !req.body.trdr || !req.body.mode) {
+  if (!req.query.mtrl || !req.query.trdr || !req.query.mode) {
     bad = true;
   } else {
-    let mtrl = req.body.mtrl;
-    let trdr = req.body.trdr;
-    let mode = req.body.mode;
+    let mtrl = req.query.mtrl;
+    let trdr = req.query.trdr;
+    let mode = req.query.mode;
     switch (mode) {
       case "insert":
         this.insertFavorite(req, res, next, mtrl, trdr);
