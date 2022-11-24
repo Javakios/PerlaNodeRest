@@ -204,7 +204,7 @@ exports.getOffers = async (req, res, next) => {
     products: returnProds,
   });
 };
-
+//delete offer
 exports.deleteOffer = async (req, res, next) => {
   let bad = false;
   let returnProds = [];
@@ -280,7 +280,7 @@ exports.deleteOffer = async (req, res, next) => {
     });
   }
 };
-
+// hundle favorites
 exports.favorites = async (req, res, next) => {
   let bad = false;
   if (!req.query.mtrl || !req.query.trdr || !req.query.mode) {
@@ -309,13 +309,14 @@ exports.favorites = async (req, res, next) => {
     res.status(404).json({ message: "Fill The required Fields" });
   }
 };
-
+// delete one favorite
 exports.deleteOne = async (req, res, next, mtrl, trdr) => {
   let deleteProd = await database.execute(
     `DELETE FROM favorites WHERE p_mtrl=${mtrl} AND c_trdr=${trdr}`
   );
   await this.fetchFavorites(req, res, next, trdr);
 };
+// delete all favorites
 exports.deleteAll = (req, res, next, trdr) => {
   database
     .execute(`DELETE FROM favorites WHERE c_trdr=${trdr}`)
@@ -330,7 +331,7 @@ exports.deleteAll = (req, res, next, trdr) => {
     });
   res.status(200).json({ message: "Favorites Deleted", products: [] });
 };
-
+// insert favorite
 exports.insertFavorite = async (req, res, next, mtrl, trdr) => {
   let findProd = await database.execute(
     `SELECT * FROM favorites WHERE p_mtrl=${mtrl} AND c_trdr=${trdr}`
@@ -345,7 +346,7 @@ exports.insertFavorite = async (req, res, next, mtrl, trdr) => {
     res.status(200).json({ message: "Product Already Exists" });
   }
 };
-
+// fetch favorites
 exports.fetchFavorites = async (req, res, next, trdr) => {
   let returnProds = [];
   let favorites = await database.execute(
@@ -360,6 +361,7 @@ exports.fetchFavorites = async (req, res, next, trdr) => {
     products: returnProds,
   });
 };
+// get single product
 exports.getSingelProduct = async (mtrl) => {
   let product = await database.execute(
     `SELECT * FROM products WHERE p_mtrl=${mtrl}`
@@ -416,7 +418,7 @@ exports.getSingelProduct = async (mtrl) => {
 
   return returnProd;
 };
-
+// fetch cart products
 exports.fetchCartItems = async (req, res, next) => {
   let bad = false;
   let cartItem = [];
@@ -449,11 +451,12 @@ exports.fetchCartItems = async (req, res, next) => {
     });
   }
 };
-
+// checks if product has offer
 exports.hasOffer = (products, i) => {
   if (products[0][i].p_wholesale_price != products[0][i].p_offer) return true;
   else return false;
 };
+// set homepageoffer
 exports.homaepageOffer = async (products, i) => {
   let homePageOffer = await database.execute(
     `SELECT * FROM products_offer WHERE product_mtrl= ${products[0][i].p_mtrl}`
@@ -461,6 +464,7 @@ exports.homaepageOffer = async (products, i) => {
   if (homePageOffer[0].length != 0) return true;
   else return false;
 };
+// get other images from porduct
 exports.getOtherImages = async (mtrl) => {
   let images = await database.execute(
     `SELECT * FROM product_images WHERE p_mtrl=${mtrl}`
@@ -473,6 +477,7 @@ exports.getOtherImages = async (mtrl) => {
   }
   return otherImages;
 };
+// get single cart item
 exports.getSingelCartitem = async (
   mtrl,
   qty,
@@ -539,7 +544,7 @@ exports.getSingelCartitem = async (
   console.log(returnProd);
   return returnProd;
 };
-
+// get seen recently products
 exports.seeEarlier = async (req, res, next) => {
   let bad = false;
   if (!req.query.trdr || !req.body.mtrl) {
@@ -590,7 +595,7 @@ exports.seeEarlier = async (req, res, next) => {
     res.status(200).json({ message: "Product Added" });
   }
 };
-
+// find mosqui product
 exports.findMosquiProduct = async (req, res, next) => {
   let bad = false;
   if (
@@ -627,7 +632,7 @@ exports.findMosquiProduct = async (req, res, next) => {
     res.status(404).json({ message: "Fill The Required Fields" });
   }
 };
-
+// find related products
 exports.findRelatedProducts = async (req, res, next) => {
   let bad = false;
   let related_mtrl;
@@ -652,51 +657,578 @@ exports.findRelatedProducts = async (req, res, next) => {
       .json({ message: "Related Products Found", products: returnProd });
   }
 };
-
+// remove cart item
 exports.removeCartItem = async (req, res, next) => {
   let bad = false;
-  if (!req.query.mtrl || !req.query.trdr || !req.query.id || !req.query.group_id) {
+  if (
+    !req.query.mtrl ||
+    !req.query.trdr ||
+    !req.query.id ||
+    !req.query.group_id
+  ) {
     res.status(404).json({ message: "Fill The Required Fields" });
   } else {
-    console.log("hello")
+    console.log("hello");
     let mtrl = req.query.mtrl;
     let trdr = req.query.trdr;
     let id = req.query.id;
     let group_id = req.query.group_id;
-    console.log(id)
+    console.log(id);
     switch (id) {
       case "1":
-        this.clearAll(req,res,next,trdr);
+        this.clearAll(req, res, next, trdr);
         break;
       case "2":
-        console.log("hello")
-        this.clearOne(req,res,next,trdr);
+        console.log("hello");
+        this.clearOne(req, res, next, trdr);
         break;
     }
   }
 };
+// clear all cart 
 exports.clearAll = (req, res, next, trdr) => {
-
-    database.execute(`delete from products_cart where p_trdr=${trdr}`)
-    .then(results=>{
-        res.status(200).json({message:"Cart Cleared",products:[]});
-    }).catch(err=>{
-        if(!err.statusCode){
-            err.statusCode=500;
-        }
-        next(err);
+  database
+    .execute(`delete from products_cart where p_trdr=${trdr}`)
+    .then((results) => {
+      res.status(200).json({ message: "Cart Cleared", products: [] });
     })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
 };
-exports.clearOne = async (req,res,next,trdr)=>{
+// remove one cart item
+exports.clearOne = async (req, res, next, trdr) => {
+  database
+    .execute(
+      `delete from products_cart where p_trdr=${trdr} and group_id=${req.query.group_id}`
+    )
+    .then((results) => {
+      this.fetchCartItems(req, res, next);
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+// add to cart 
+exports.addToCart = async (req, res, next) => {
+  let bad = false;
+  if (
+    !req.body.mtrl ||
+    !req.body.trdr ||
+    !req.body.code ||
+    !req.body.name ||
+    !req.body.name1 ||
+    !req.body.img ||
+    !req.body.category ||
+    !req.body.qty ||
+    !req.body.retail ||
+    !req.body.wholesale ||
+    !req.body.stock ||
+    !req.body.group_id ||
+    !req.body.p_page ||
+    !req.body.dec ||
+    !req.body.omada ||
+    !req.body.offer ||
+    !req.body.empor_katig ||
+    !req.body.geo_zoni
+  ) {
+    bad = true;
+  } else {
+    let mtrl = req.body.mtrl;
+    let trdr = req.body.trdr;
+    let code = req.body.code;
+    let name = req.body.name;
+    let name1 = req.body.name1;
+    let img = req.body.img;
+    let category = req.body.category;
+    let qty = req.body.qty;
+    let retail = req.body.retail;
+    let wholesale = req.body.wholesale;
+    let stock = req.body.stock;
+    let group_id = req.body.group_id;
+    let p_page = req.body.p_page;
+    let dec = req.body.dec;
+    let omada = req.body.omada;
+    let offer = req.body.offer;
+    let empor_katig = req.body.empor_katig;
+    let geo_zoni = req.body.geo_zoni;
+    let discound;
+    let ypokat;
+    if (req.body.discound) discound = req.body.discound;
+    else discound = 0;
+    if (req.body.ypokat) ypokat = req.body.ypokat;
 
-    database.execute(`delete from products_cart where p_trdr=${trdr} and group_id=${req.query.group_id}`)
-    .then(results=>{
-        this.fetchCartItems(req, res, next)
-    }).catch(err=>{
-        if(!err.statusCode){
-            err.statusCode=500;
+    if (group_id == mtrl) {
+      let find = await database.execute(
+        `select * from products_cart where p_mtrl=${mtrl} and p_trdr=${trdr}`
+      );
+      if (find[0].length > 0) {
+        if (p_page == 2) {
+          database
+            .execute(
+              `update products_cart set p_qty=p_qty+${qty} where p_mtrl=${mtrl} and p_trdr=${trdr}`
+            )
+            .then((results) => {
+              res
+                .status(200)
+                .json({ message: "Product updated successfully 0" });
+            })
+            .catch((err) => {
+              if (!err.statusCode) {
+                err.statusCode = 500;
+              }
+              next(err);
+            });
+        } else {
+          if (dec == 2) {
+            database
+              .execute(
+                `update products_cart set p_qty=p_qty-1 where p_mtrl=${mtrl} and p_trdr=${trdr}`
+              )
+              .then((results) => {
+                res
+                  .status(200)
+                  .json({ message: "Product updated successfully 1" });
+              })
+              .catch((err) => {
+                if (!err.statusCode) {
+                  err.statusCode = 500;
+                }
+                next(err);
+              });
+          } else {
+            database
+              .execute(
+                `update products_cart set p_qty=p_qty+1 where p_mtrl=${mtrl} and p_trdr=${trdr}`
+              )
+              .then((results) => {
+                res
+                  .status(200)
+                  .json({ message: "Product updated successfully 2" });
+              })
+              .catch((err) => {
+                if (!err.statusCode) {
+                  err.statusCode = 500;
+                }
+                next(err);
+              });
+          }
         }
-        next(err);
-    })    
+      } else {
+        /* 
+            
+                4 Σεναρια
+                ------------------------------------------------
+                1. ΤΙΜΗ ΑΝΑ ΠΕΛΑΤΗ ΚΑΙ ΕΙΔΟΣ
+                    1) πελατη
+                    2) ειδος
+                    3) τιμη
+                2. ΕΚΠΤΩΣΕΙΣ ΑΝΑ ΥΠΟΚΑΤΑΣΤΗΜΑ EXALCO
+                    1) Υποκαταστημα
+                    2) Ειδος
+                    3) Εκπτωση
+                3. ΤΙΜΗ ΑΝΑ ΠΕΛΑΤΗ ΚΑΙ ΟΜΑΔΑ ΕΙΔΟΥΣ
+                    1) Πελατης
+                    2) Ομαδα Ειδους
+                    3) Εκπτωση
+                4. ΚΑΤΗΓΟΡΙΑ ΠΕΛΑΤΗ - ΟΜΑΔΑ ΕΙΔΟΥΣ - ΓΕΩΓΡΑΦΙΚΗ ΖΩΝΗ
+                    1) Εμπορικη Κατηγορια
+                    2) Γεωγραφικη Ζωνη
+                    3) Ομαδα
+                    4) Εκπτωση
+                5. -25% -35%
+                    1) Ειδοες
+                    2) Ποσοστητα
+                    3) Εκπτωση
 
-}
+                2 Περιπτωσεις 
+                ------------------------------------------------
+                1. Αν ειναι εξαλκο 
+                   τα τρεχω ολα με την σερια
+                2. Αν δεν ειναι εξαλκο
+                    παραλειπτω το 2ο.
+
+               Εκτελεση 
+               ------------------------------------------------
+                Οταν σε ενα απ τα 5 βρει να αντοιστοιχουν τα πεδια
+                παραλειπτει τα υπολοιπα.
+                αλλιως τα εκτελει ολα με την σειρα μεχρι το τελος.
+                
+                
+            */
+        // ΤΙΜΗ ΑΝΑ ΠΕΛΑΤΗ ΚΑΙ ΕΙΔΟΣ
+        let timi_pelati_eidos = await database.execute(
+          `select count(trdr) as count from timi_ana_pelati_eidos where trdr=${trdr} and mtrl=${mtrl} `
+        );
+        if (timi_pelati_eidos[0][0].count > 0) {
+          if (offer == wholesale) {
+            let new_price = await database.execute(
+              `select price from timi_ana_pelati_eidos where trdr=${trdr} and mtrl = ${mtrl}`
+            );
+            wholesale = new_price[0][0].price;
+          }
+        } else {
+          if (trdr == "444") {
+            // ΕΚΠΤΩΣΕΙΣ ΑΝΑ ΥΠΟΚΑΤΑΣΤΗΜΑ EXALCO
+            let ekptosis_ana_upokatastima_exalco = await database.execute(
+              `select count(ypokat) as count from ekptoseis_ana_ypokat_exalco where ypokat=${ypokat} and omada=${omada}`
+            );
+            if (ekptosis_ana_upokatastima_exalco[0][0].count > 0) {
+              if (offer == wholesale) {
+                let new_price = await database.execute(
+                  `select ekptosi from ekptoseis_ana_ypokat_exalco where ypokat=${ypokat} and omada=${omada}`
+                );
+                discound = new_price[0][0].ekptosi;
+                wholesale = wholesale - (wholesale * discound) / 100;
+              }
+            } else {
+              let timi_pelati_omada_eidous = await database.execute(
+                `select count(trdr) as count from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+              );
+              if (timi_pelati_omada_eidous[0][0].count > 0) {
+                if (offer == wholesale) {
+                  let new_price = await database.execute(
+                    `select ekptosi from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+                  );
+                  discound = new_price[0][0].ekptosi;
+                  wholesale = wholesale - (wholesale * discound) / 100;
+                }
+              } else {
+                let katigoria_pelati_omada_eidous_geo_zoni =
+                  await database.execute(
+                    `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=`,`'?'`,` and omada=${omada}`,[geo_zoni]
+                  );
+                if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
+                  if (offer == wholesale) {
+                    let new_price = await database.execute(
+                      `select ekptosi from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                    );
+                    discound = new_price[0][0].ekptosi;
+                    wholesale = wholesale - (wholesale * discound) / 100;
+                  }
+                } else {
+                  let ekptosi = await database.execute(
+                    `select count(mtrl) as count from ekptosi where mtrl=${mtrl}`
+                  );
+                  if (ekptosi[0][0].count > 0) {
+                    if (offer == wholesale) {
+                      let new_price = await database.execute(
+                        `select asc(posotita) as posotita from ekptosi where mtrl=${mtrl}`
+                      );
+                      let pososotita = [
+                        new_price[0][0].posotita,
+                        new_price[0][1].pososotita,
+                      ];
+                      if (qty > posotita[1]) {
+                        new_preice = database.execute(
+                          `select ekptosi from ekptosi where mtrl${mtrl} and posotita=${posotita[1]}`
+                        );
+                        discound = new_price[0][0].ekptosi;
+                        wholesale = wholesale - (wholesale * discound) / 100;
+                      } else {
+                        new_price = database.execute(
+                          `select ekptosi from ekptosi where mtrl=${mtrl} and posotita=${posotita[0]}`
+                        );
+                        discound = new_price[0][0].ekptosi;
+                        wholesale = wholesale - (wholesale * discound) / 100;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } else {
+            let timi_pelati_omada_eidous = await database.execute(
+              `select count(trdr) as count from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+            );
+            if (timi_pelati_omada_eidous[0][0].count > 0) {
+              if (offer == wholesale) {
+                let new_price = await database.execute(
+                  `select ekptosi from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+                );
+                discound = new_price[0][0].ekptosi;
+                wholesale = wholesale - (wholesale * discound) / 100;
+              }
+            } else {
+              let katigoria_pelati_omada_eidous_geo_zoni =
+                await database.execute(
+                  `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                );
+              if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
+                if (offer == wholesale) {
+                  let new_price = await database.execute(
+                    `select ekptosi from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                  );
+                  discound = new_price[0][0].ekptosi;
+                  wholesale = wholesale - (wholesale * discound) / 100;
+                }
+              } else {
+                let ekptosi = await database.execute(
+                  `select count(mtrl) as count from ekptosi where mtrl=${mtrl}`
+                );
+                if (ekptosi[0][0].count > 0) {
+                  if (offer == wholesale) {
+                    let new_price = await database.execute(
+                      `select asc(posotita) as posotita from ekptosi where mtrl=${mtrl}`
+                    );
+                    let pososotita = [
+                      new_price[0][0].posotita,
+                      new_price[0][1].pososotita,
+                    ];
+                    if (qty > posotita[1]) {
+                      new_preice = database.execute(
+                        `select ekptosi from ekptosi where mtrl${mtrl} and posotita=${posotita[1]}`
+                      );
+                      discound = new_price[0][0].ekptosi;
+                      wholesale = wholesale - (wholesale * discound) / 100;
+                    } else {
+                      new_price = database.execute(
+                        `select ekptosi from ekptosi where mtrl=${mtrl} and posotita=${posotita[0]}`
+                      );
+                      discound = new_price[0][0].ekptosi;
+                      wholesale = wholesale - (wholesale * discound) / 100;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          database
+            .execute(
+              `insert into products_cart(p_mtrl,p_trdr,p_code,p_name,p_name1,p_img,p_category,p_qty,p_retail,p_wholesale,p_stock,p_disc,group_id) values(${mtrl},${trdr},'${code}','${name}','${name1}','${img}',${category},${qty},${retail},${wholesale},${stock},${discound},${group_id})`
+            )
+            .then((results) => {
+              res.status(200).json({
+                message: "Product added successfully",
+              });
+            })
+            .catch((err) => {
+              if (!err.statusCode) {
+                err.statusCode = 500;
+              }
+              next(err);
+            });
+        }
+      }
+    } else {
+      
+      let select = await database.execute(
+        `select * from products_cart where group_id=${group_id} and p_mtrl=${mtrl} and p_trdr=${trdr}`
+      );
+      if (select[0].length > 0) {
+        if (p_page == 2) {
+          database
+            .execute(
+              `update products_cart set p_qty=${qty}+p_qty where group_id=${group_id} and p_trdr=${trdr}`
+            )
+            .then((results) => {
+              res.status(200).json({
+                message: "Product updated successfully 0",
+              });
+            })
+            .catch((err) => {
+              if (!err.statusCode) {
+                err.statusCode = 500;
+              }
+              next(err);
+            });
+        } else {
+          if (dec == 2) {
+            database
+              .execute(
+                `update products_cart set p_qty=p_qty-1 where group_id=${group_id} and p_trdr=${trdr}`
+              )
+              .then((results) => {
+                res.status(200).json({
+                  message: "Product updated successfully 1",
+                });
+              })
+              .catch((err) => {
+                if (!err.statusCode) {
+                  err.statusCode = 500;
+                }
+                next(err);
+              });
+          } else {
+            database
+              .execute(
+                `update products_cart set p_qty=p_qty+1 where group_id=${group_id} and p_trdr=${trdr}`
+              )
+              .then((results) => {
+                res.status(200).json({
+                  message: "Product updated successfully 1.2",
+                });
+              })
+              .catch((err) => {
+                if (!err.statusCode) {
+                  err.statusCode = 500;
+                }
+                next(err);
+              });
+          }
+        }
+      }else{
+
+        let timi_pelati_eidos = await database.execute(
+          `select count(trdr) as count from timi_ana_pelati_eidos where trdr=${trdr} and mtrl=${mtrl} `
+        );
+        if (timi_pelati_eidos[0][0].count > 0) {
+          if (offer == wholesale) {
+            let new_price = await database.execute(
+              `select price from timi_ana_pelati_eidos where trdr=${trdr} and mtrl = ${mtrl}`
+            );
+            wholesale = new_price[0][0].price;
+          }
+        } else {
+          if (trdr == "444") {
+            // ΕΚΠΤΩΣΕΙΣ ΑΝΑ ΥΠΟΚΑΤΑΣΤΗΜΑ EXALCO
+            let ekptosis_ana_upokatastima_exalco = await database.execute(
+              `select count(ypokat) as count from ekptoseis_ana_ypokat_exalco where ypokat=${ypokat} and omada=${omada}`
+            );
+            if (ekptosis_ana_upokatastima_exalco[0][0].count > 0) {
+              if (offer == wholesale) {
+                let new_price = await database.execute(
+                  `select ekptosi from ekptoseis_ana_ypokat_exalco where ypokat=${ypokat} and omada=${omada}`
+                );
+                discound = new_price[0][0].ekptosi;
+                wholesale = wholesale - (wholesale * discound) / 100;
+              }
+            } else {
+              let timi_pelati_omada_eidous = await database.execute(
+                `select count(trdr) as count from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+              );
+              if (timi_pelati_omada_eidous[0][0].count > 0) {
+                if (offer == wholesale) {
+                  let new_price = await database.execute(
+                    `select ekptosi from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+                  );
+                  discound = new_price[0][0].ekptosi;
+                  wholesale = wholesale - (wholesale * discound) / 100;
+                }
+              } else {
+                let katigoria_pelati_omada_eidous_geo_zoni =
+                  await database.execute(
+                    `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                  );
+                if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
+                  if (offer == wholesale) {
+                    let new_price = await database.execute(
+                      `select ekptosi from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                    );
+                    discound = new_price[0][0].ekptosi;
+                    wholesale = wholesale - (wholesale * discound) / 100;
+                  }
+                } else {
+                  let ekptosi = await database.execute(
+                    `select count(mtrl) as count from ekptosi where mtrl=${mtrl}`
+                  );
+                  if (ekptosi[0][0].count > 0) {
+                    if (offer == wholesale) {
+                      let new_price = await database.execute(
+                        `select asc(posotita) as posotita from ekptosi where mtrl=${mtrl}`
+                      );
+                      let pososotita = [
+                        new_price[0][0].posotita,
+                        new_price[0][1].pososotita,
+                      ];
+                      if (qty > posotita[1]) {
+                        new_preice = database.execute(
+                          `select ekptosi from ekptosi where mtrl${mtrl} and posotita=${posotita[1]}`
+                        );
+                        discound = new_price[0][0].ekptosi;
+                        wholesale = wholesale - (wholesale * discound) / 100;
+                      } else {
+                        new_price = database.execute(
+                          `select ekptosi from ekptosi where mtrl=${mtrl} and posotita=${posotita[0]}`
+                        );
+                        discound = new_price[0][0].ekptosi;
+                        wholesale = wholesale - (wholesale * discound) / 100;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } else {
+            let timi_pelati_omada_eidous = await database.execute(
+              `select count(trdr) as count from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+            );
+            if (timi_pelati_omada_eidous[0][0].count > 0) {
+              if (offer == wholesale) {
+                let new_price = await database.execute(
+                  `select ekptosi from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+                );
+                discound = new_price[0][0].ekptosi;
+                wholesale = wholesale - (wholesale * discound) / 100;
+              }
+            } else {
+              let katigoria_pelati_omada_eidous_geo_zoni =
+                await database.execute(
+                  `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                );
+              if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
+                if (offer == wholesale) {
+                  let new_price = await database.execute(
+                    `select ekptosi from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                  );
+                  discound = new_price[0][0].ekptosi;
+                  wholesale = wholesale - (wholesale * discound) / 100;
+                }
+              } else {
+                let ekptosi = await database.execute(
+                  `select count(mtrl) as count from ekptosi where mtrl=${mtrl}`
+                );
+                if (ekptosi[0][0].count > 0) {
+                  if (offer == wholesale) {
+                    let new_price = await database.execute(
+                      `select asc(posotita) as posotita from ekptosi where mtrl=${mtrl}`
+                    );
+                    let pososotita = [
+                      new_price[0][0].posotita,
+                      new_price[0][1].pososotita,
+                    ];
+                    if (qty > posotita[1]) {
+                      new_preice = database.execute(
+                        `select ekptosi from ekptosi where mtrl${mtrl} and posotita=${posotita[1]}`
+                      );
+                      discound = new_price[0][0].ekptosi;
+                      wholesale = wholesale - (wholesale * discound) / 100;
+                    } else {
+                      new_price = database.execute(
+                        `select ekptosi from ekptosi where mtrl=${mtrl} and posotita=${posotita[0]}`
+                      );
+                      discound = new_price[0][0].ekptosi;
+                      wholesale = wholesale - (wholesale * discound) / 100;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        database
+          .execute(
+            `insert into products_cart(p_mtrl,p_trdr,p_code,p_name,p_name1,p_img,p_category,p_qty,p_retail,p_wholesale,p_stock,p_disc,group_id) values(${mtrl},${trdr},'${code}','${name}','${name1}','${img}',${category},${qty},${retail},${wholesale},${stock},${discound},${group_id})`
+        ).then(results=>{
+          res.status(200).json({
+            message: "Product added successfully",
+          });
+        }).catch(err=>{
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
+        })
+      }
+    }
+  }
+  if (bad) {
+    res.status(404).json({ message: "Fill The Required Fields" });
+  }
+};
