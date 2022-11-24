@@ -786,7 +786,7 @@ exports.addToCart = async (req, res, next) => {
               next(err);
             });
         } else {
-          if (dec == 2) {
+          if (dec == "2") {
             database
               .execute(
                 `update products_cart set p_qty=p_qty-1 where p_mtrl=${mtrl} and p_trdr=${trdr}`
@@ -1039,7 +1039,7 @@ exports.addToCart = async (req, res, next) => {
               next(err);
             });
         } else {
-          if (dec == 2) {
+          if (dec == "2") {
             database
               .execute(
                 `update products_cart set p_qty=p_qty-1 where group_id=${group_id} and p_trdr=${trdr}`
