@@ -4,7 +4,7 @@ const { body } = require('express-validator/check');
 const router = express.Router();
 // controllers 
 const productsController = require('../controllers/products');
-
+router.post('/addToCart',productsController.addToCart);
 router.post('/getAllOffers',productsController.getOffers);
 router.get('/getProducts',productsController.getProducts);
 router.get('/getAllproductsRelated',productsController.getProductsRelated);
@@ -15,5 +15,5 @@ router.get('/seeEarlier',productsController.seeEarlier);
 router.get('/findMosquiProduct',productsController.findMosquiProduct);
 router.get('/findRelatedProducts',productsController.findRelatedProducts);
 router.get('/removeCartItem',productsController.removeCartItem);
-router.post('/addToCart',productsController.addToCart);
+
 module.exports = router;
