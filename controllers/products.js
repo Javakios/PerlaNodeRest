@@ -420,13 +420,14 @@ exports.getSingelProduct = async (mtrl) => {
 };
 // fetch cart products
 exports.fetchCartItems =  (req, res, next) => {
+  console.log(req.query);
   let bad = false;
   let cartItem = [];
   if (!req.query.trdr) {
     bad = true;
   } else {
     let trdr = req.query.trdr;
-    let cartItems =  database.execute(
+     database.execute(
       `SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`
     ).then(async results=>{
         for (let i = 0; i < results[0].length; i++) {
@@ -670,33 +671,42 @@ exports.removeCartItem = async (req, res, next) => {
     !req.query.id ||
     !req.query.group_id
   ) {
+    console.log("hello");
     res.status(404).json({ message: "Fill The Required Fields" });
   } else {
-    // console.log("hello");
+    console.log("hello");
     let mtrl = req.query.mtrl;
     let trdr = req.query.trdr;
     let id = req.query.id;
     let group_id = req.query.group_id;
      console.log(id);
+     let prods;
     switch (id) {
       case "2":
-        this.clearOne(req, res, next, trdr,group_id);
+        await this.clearOne(req, res, next, trdr,group_id);
         break;
       default:
-        this.clearAll(req, res, next, trdr);
+         await this.clearAll(req, res, next, trdr);
         // console.log("hello");
         
         break;
     }
+   
   }
+
 };
 // clear all cart 
-exports.clearAll = (req, res, next, trdr) => {
+exports.clearAll =async (req, res, next, trdr) => {
   database
     .execute(`delete from products_cart where p_trdr=${trdr}`)
     .then((results) => {
       console.log(results[0])
-      res.status(200).json({ message: "Cart Cleared", products: [] });
+      if (results[0].affectedRows) {
+        res.status(200).json({ message: "Cart Cleared" });
+      } else {
+        this.fetchCartItems(req, res, next, trdr);
+      
+     }
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -706,13 +716,14 @@ exports.clearAll = (req, res, next, trdr) => {
     });
 };
 // remove one cart item
-exports.clearOne =  (req, res, next, trdr,group_id) => {
+exports.clearOne = async (req, res, next, trdr,group_id) => {
   database
     .execute(
       `delete from products_cart where p_trdr=${trdr} and group_id=${group_id}`
     )
     .then(async(results) => {
-      await this.fetchCartItems(req, res, next);
+       this.fetchCartItems(req, res, next, trdr);
+      
     })
     .catch((err) => {
       if (!err.statusCode) {
