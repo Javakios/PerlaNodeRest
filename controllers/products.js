@@ -706,7 +706,7 @@ exports.clearAll = async (req, res, next, trdr) => {
       next(err);
     });
 };
-// remove one cart item
+
 exports.clearOne = async (req, res, next, trdr, group_id) => {
   database
     .execute(
@@ -722,7 +722,7 @@ exports.clearOne = async (req, res, next, trdr, group_id) => {
       next(err);
     });
 };
-// add to cart
+
 exports.addToCart = async (req, res, next) => {
   let bad = false;
   if (
