@@ -422,58 +422,35 @@ exports.getSingelProduct = async (mtrl) => {
 exports.fetchCartItems = async (req, res, next) => {
   let bad = false;
   let cartItem = [];
-  let cartItems;
   if (!req.query.trdr) {
     bad = true;
   } else {
     let trdr = req.query.trdr;
-     cartItems = await database.execute(
+    let cartItems = await database.execute(
       `SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`
     );
-    
     for (let i = 0; i < cartItems[0].length; i++) {
-      cartItem.push({
-        mtrl: cartItems[0][i].p_mtrl,
-        omada: cartItems[0][i].p_omada,
-        name: cartItems[0][i].p_name,
-        name1: cartItems[0][i].p_name1,
-        retailPrice: cartItems[0][i].p_retail_price,
-        wholesalePrice: wholesale,
-        offer: cartItems[0][i].p_offer,
-        hasOffer: hasOffer,
-        homePageOffer: homeOffer,
-        qty: qty,
-        discount: discount,
-        group_id: group_id,
-        code: cartItems[0][i].p_kod,
-        description_eng: cartItems[0][i].p_desc_eng,
-        stock: cartItems[0][i].p_stock,
-        diathesima: cartItems[0][i].p_diathesima,
-        desmeumena: cartItems[0][i].p_desmeumena,
-        category: cartItems[0][i].p_category,
-        subcategory: cartItems[0][i].p_subcategory,
-        image: cartItems[0][i].p_image,
-        otherImages: otherImages,
-        description: cartItems[0][i].p_desc,
-        pdf: cartItems[0][i].p_pdf,
-        video: cartItems[0][i].p_yt_vid,
-        data_sheet: cartItems[0][i].p_data_sheet,
-        data_sheet_eng: cartItems[0][i].data_sheet_eng,
-        onoma: cartItems[0][i].onoma_product,
-        onoma_eng: cartItems[0][i].onoma_product_eng,
-        kodikos_kataskeuasti: cartItems[0][i].p_code_kataskeuasti,
-        texnikos_kodikos: cartItems[0][i].p_code_texniko,
-      });
+      cartItem.push(
+        await this.getSingelCartitem(
+          cartItems[0][i].p_mtrl,
+          cartItems[0][i].p_qty,
+          cartItems[0][i].group_id,
+          cartItems[0][i].p_wholesale,
+          cartItems[0][i].p_disc
+        )
+      );
     }
-    res.status(200).json({
+     res.status(200).json({
       message: "Cart Items",
       products: cartItem,
-      test:cartItems
+      cartItems:cartItems[0]
     });
   }
 
   if (bad) {
     res.status(404).json({ message: "Fill The required Fields" });
+  } else {
+   
   }
 };
 // checks if product has offer
@@ -710,12 +687,12 @@ exports.removeCartItem = async (req, res, next) => {
     }
   }
 };
-// clear all cart
+// clear all cart 
 exports.clearAll = (req, res, next, trdr) => {
   database
     .execute(`delete from products_cart where p_trdr=?`, [JSON.stringify(trdr)])
     .then((results) => {
-      console.log(results[0]);
+      console.log(results[0])
       res.status(200).json({ message: "Cart Cleared", products: [] });
     })
     .catch((err) => {
@@ -726,7 +703,7 @@ exports.clearAll = (req, res, next, trdr) => {
     });
 };
 // remove one cart item
-exports.clearOne = (req, res, next, trdr) => {
+exports.clearOne =  (req, res, next, trdr) => {
   database
     .execute(
       `delete from products_cart where p_trdr=${trdr} and group_id=${req.query.group_id}`
@@ -741,7 +718,7 @@ exports.clearOne = (req, res, next, trdr) => {
       next(err);
     });
 };
-// add to cart
+// add to cart 
 exports.addToCart = async (req, res, next) => {
   let bad = false;
   if (
@@ -794,7 +771,7 @@ exports.addToCart = async (req, res, next) => {
       let find = await database.execute(
         `select * from products_cart where p_mtrl=${mtrl} and p_trdr=${trdr}`
       );
-
+      
       if (find[0].length > 0) {
         if (p_page == 2) {
           database
@@ -899,7 +876,7 @@ exports.addToCart = async (req, res, next) => {
               `select price from timi_ana_pelati_eidos where trdr=${trdr} and mtrl = ${mtrl}`
             );
             wholesale = new_price[0][0].price;
-          }
+          } 
         } else {
           if (trdr == "444") {
             // ΕΚΠΤΩΣΕΙΣ ΑΝΑ ΥΠΟΚΑΤΑΣΤΗΜΑ EXALCO
@@ -929,10 +906,7 @@ exports.addToCart = async (req, res, next) => {
               } else {
                 let katigoria_pelati_omada_eidous_geo_zoni =
                   await database.execute(
-                    `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=`,
-                    `'?'`,
-                    ` and omada=${omada}`,
-                    [geo_zoni]
+                    `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=`,`'?'`,` and omada=${omada}`,[geo_zoni]
                   );
                 if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
                   if (offer == wholesale) {
@@ -1047,6 +1021,7 @@ exports.addToCart = async (req, res, next) => {
         }
       }
     } else {
+      
       let select = await database.execute(
         `select * from products_cart where group_id=${group_id} and p_mtrl=${mtrl} and p_trdr=${trdr}`
       );
@@ -1102,7 +1077,8 @@ exports.addToCart = async (req, res, next) => {
               });
           }
         }
-      } else {
+      }else{
+
         let timi_pelati_eidos = await database.execute(
           `select count(trdr) as count from timi_ana_pelati_eidos where trdr=${trdr} and mtrl=${mtrl} `
         );
@@ -1243,18 +1219,16 @@ exports.addToCart = async (req, res, next) => {
         database
           .execute(
             `insert into products_cart(p_mtrl,p_trdr,p_code,p_name,p_name1,p_img,p_category,p_qty,p_retail,p_wholesale,p_stock,p_disc,group_id) values(${mtrl},${trdr},'${code}','${name}','${name1}','${img}',${category},${qty},${retail},${wholesale},${stock},${discound},${group_id})`
-          )
-          .then((results) => {
-            res.status(200).json({
-              message: "Product added successfully",
-            });
-          })
-          .catch((err) => {
-            if (!err.statusCode) {
-              err.statusCode = 500;
-            }
-            next(err);
+        ).then(results=>{
+          res.status(200).json({
+            message: "Product added successfully",
           });
+        }).catch(err=>{
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
+        })
       }
     }
   }
