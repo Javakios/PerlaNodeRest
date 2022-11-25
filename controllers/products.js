@@ -419,7 +419,7 @@ exports.getSingelProduct = async (mtrl) => {
   return returnProd;
 };
 // fetch cart products
-exports.fetchCartItems =  (req, res, next) => {
+exports.fetchCartItems = (req, res, next) => {
   console.log(req.body);
   let bad = false;
   let cartItem = [];
@@ -427,33 +427,32 @@ exports.fetchCartItems =  (req, res, next) => {
     bad = true;
   } else {
     let trdr = req.body.trdr;
-     database.execute(
-      `SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`
-    ).then(async results=>{
+    database
+      .execute(
+        `SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`
+      )
+      .then(async (results) => {
         for (let i = 0; i < results[0].length; i++) {
-        cartItem.push(
-          await this.getSingelCartitem(
-            results[0][i].p_mtrl,
-            results[0][i].p_qty,
-            results[0][i].group_id,
-            results[0][i].p_wholesale,
-            results[0][i].p_disc
-          )
-        );
-      }
-       res.status(200).json({
-        message: "Cart Items",
-        products: cartItem,
-        
-    })
-    
-    });
+          cartItem.push(
+            await this.getSingelCartitem(
+              results[0][i].p_mtrl,
+              results[0][i].p_qty,
+              results[0][i].group_id,
+              results[0][i].p_wholesale,
+              results[0][i].p_disc
+            )
+          );
+        }
+        res.status(200).json({
+          message: "Cart Items",
+          products: cartItem,
+        });
+      });
   }
 
   if (bad) {
     res.status(404).json({ message: "Fill The required Fields" });
   } else {
-   
   }
 };
 // checks if product has offer
@@ -665,12 +664,7 @@ exports.findRelatedProducts = async (req, res, next) => {
 // remove cart item
 exports.removeCartItem = async (req, res, next) => {
   let bad = false;
-  if (
-    !req.body.mtrl ||
-    !req.body.trdr ||
-    !req.body.id ||
-    !req.body.group_id
-  ) {
+  if (!req.body.mtrl || !req.body.trdr || !req.body.id || !req.body.group_id) {
     console.log("hello");
     res.status(404).json({ message: "Fill The Required Fields" });
   } else {
@@ -679,34 +673,31 @@ exports.removeCartItem = async (req, res, next) => {
     let trdr = req.body.trdr;
     let id = req.body.id;
     let group_id = req.body.group_id;
-     console.log(id);
-     let prods;
+    console.log(id);
+    let prods;
     switch (id) {
       case "2":
-        await this.clearOne(req, res, next, trdr,group_id);
+        await this.clearOne(req, res, next, trdr, group_id);
         break;
       default:
-         await this.clearAll(req, res, next, trdr);
+        await this.clearAll(req, res, next, trdr);
         // console.log("hello");
-        
+
         break;
     }
-   
   }
-
 };
-// clear all cart 
-exports.clearAll =async (req, res, next, trdr) => {
+// clear all cart
+exports.clearAll = async (req, res, next, trdr) => {
   database
     .execute(`delete from products_cart where p_trdr=${trdr}`)
     .then((results) => {
-      console.log(results[0])
+      console.log(results[0]);
       if (results[0].affectedRows) {
-        res.status(200).json({ message: "Cart Cleared",products:[] });
+        res.status(200).json({ message: "Cart Cleared", products: [] });
       } else {
         this.fetchCartItems(req, res, next, trdr);
-      
-     }
+      }
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -716,14 +707,13 @@ exports.clearAll =async (req, res, next, trdr) => {
     });
 };
 // remove one cart item
-exports.clearOne = async (req, res, next, trdr,group_id) => {
+exports.clearOne = async (req, res, next, trdr, group_id) => {
   database
     .execute(
       `delete from products_cart where p_trdr=${trdr} and group_id=${group_id}`
     )
-    .then(async(results) => {
-       this.fetchCartItems(req, res, next, trdr);
-      
+    .then(async (results) => {
+      this.fetchCartItems(req, res, next, trdr);
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -732,7 +722,7 @@ exports.clearOne = async (req, res, next, trdr,group_id) => {
       next(err);
     });
 };
-// add to cart 
+// add to cart
 exports.addToCart = async (req, res, next) => {
   let bad = false;
   if (
@@ -785,7 +775,7 @@ exports.addToCart = async (req, res, next) => {
       let find = await database.execute(
         `select * from products_cart where p_mtrl=${mtrl} and p_trdr=${trdr}`
       );
-      
+
       if (find[0].length > 0) {
         if (p_page == 2) {
           database
@@ -890,7 +880,7 @@ exports.addToCart = async (req, res, next) => {
               `select price from timi_ana_pelati_eidos where trdr=${trdr} and mtrl = ${mtrl}`
             );
             wholesale = new_price[0][0].price;
-          } 
+          }
         } else {
           if (trdr == "444") {
             // ΕΚΠΤΩΣΕΙΣ ΑΝΑ ΥΠΟΚΑΤΑΣΤΗΜΑ EXALCO
@@ -920,7 +910,10 @@ exports.addToCart = async (req, res, next) => {
               } else {
                 let katigoria_pelati_omada_eidous_geo_zoni =
                   await database.execute(
-                    `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=`,`'?'`,` and omada=${omada}`,[geo_zoni]
+                    `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=`,
+                    `'?'`,
+                    ` and omada=${omada}`,
+                    [geo_zoni]
                   );
                 if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
                   if (offer == wholesale) {
@@ -1035,7 +1028,6 @@ exports.addToCart = async (req, res, next) => {
         }
       }
     } else {
-      
       let select = await database.execute(
         `select * from products_cart where group_id=${group_id} and p_mtrl=${mtrl} and p_trdr=${trdr}`
       );
@@ -1091,8 +1083,7 @@ exports.addToCart = async (req, res, next) => {
               });
           }
         }
-      }else{
-
+      } else {
         let timi_pelati_eidos = await database.execute(
           `select count(trdr) as count from timi_ana_pelati_eidos where trdr=${trdr} and mtrl=${mtrl} `
         );
@@ -1233,16 +1224,18 @@ exports.addToCart = async (req, res, next) => {
         database
           .execute(
             `insert into products_cart(p_mtrl,p_trdr,p_code,p_name,p_name1,p_img,p_category,p_qty,p_retail,p_wholesale,p_stock,p_disc,group_id) values(${mtrl},${trdr},'${code}','${name}','${name1}','${img}',${category},${qty},${retail},${wholesale},${stock},${discound},${group_id})`
-        ).then(results=>{
-          res.status(200).json({
-            message: "Product added successfully",
+          )
+          .then((results) => {
+            res.status(200).json({
+              message: "Product added successfully",
+            });
+          })
+          .catch((err) => {
+            if (!err.statusCode) {
+              err.statusCode = 500;
+            }
+            next(err);
           });
-        }).catch(err=>{
-          if (!err.statusCode) {
-            err.statusCode = 500;
-          }
-          next(err);
-        })
       }
     }
   }
