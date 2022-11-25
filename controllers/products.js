@@ -675,10 +675,10 @@ exports.removeCartItem = async (req, res, next) => {
     res.status(404).json({ message: "Fill The Required Fields" });
   } else {
     console.log("hello");
-    let mtrl = req.query.mtrl;
-    let trdr = req.query.trdr;
-    let id = req.query.id;
-    let group_id = req.query.group_id;
+    let mtrl = req.body.mtrl;
+    let trdr = req.body.trdr;
+    let id = req.body.id;
+    let group_id = req.body.group_id;
      console.log(id);
      let prods;
     switch (id) {
