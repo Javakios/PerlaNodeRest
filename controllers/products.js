@@ -864,141 +864,141 @@ exports.addToCart = async (req, res, next) => {
                 
             */
         // ΤΙΜΗ ΑΝΑ ΠΕΛΑΤΗ ΚΑΙ ΕΙΔΟΣ
-        // let timi_pelati_eidos = await database.execute(
-        //   `select count(trdr) as count from timi_ana_pelati_eidos where trdr=${trdr} and mtrl=${mtrl} `
-        // );
-        // if (timi_pelati_eidos[0][0].count > 0) {
-        //   if (offer == wholesale) {
-        //     let new_price = await database.execute(
-        //       `select price from timi_ana_pelati_eidos where trdr=${trdr} and mtrl = ${mtrl}`
-        //     );
-        //     wholesale = new_price[0][0].price;
-        //   } 
-        // } else {
-        //   if (trdr == "444") {
-        //     // ΕΚΠΤΩΣΕΙΣ ΑΝΑ ΥΠΟΚΑΤΑΣΤΗΜΑ EXALCO
-        //     let ekptosis_ana_upokatastima_exalco = await database.execute(
-        //       `select count(ypokat) as count from ekptoseis_ana_ypokat_exalco where ypokat=${ypokat} and omada=${omada}`
-        //     );
-        //     if (ekptosis_ana_upokatastima_exalco[0][0].count > 0) {
-        //       if (offer == wholesale) {
-        //         let new_price = await database.execute(
-        //           `select ekptosi from ekptoseis_ana_ypokat_exalco where ypokat=${ypokat} and omada=${omada}`
-        //         );
-        //         discound = new_price[0][0].ekptosi;
-        //         wholesale = wholesale - (wholesale * discound) / 100;
-        //       }
-        //     } else {
-        //       let timi_pelati_omada_eidous = await database.execute(
-        //         `select count(trdr) as count from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
-        //       );
-        //       if (timi_pelati_omada_eidous[0][0].count > 0) {
-        //         if (offer == wholesale) {
-        //           let new_price = await database.execute(
-        //             `select ekptosi from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
-        //           );
-        //           discound = new_price[0][0].ekptosi;
-        //           wholesale = wholesale - (wholesale * discound) / 100;
-        //         }
-        //       } else {
-        //         let katigoria_pelati_omada_eidous_geo_zoni =
-        //           await database.execute(
-        //             `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=`,`'?'`,` and omada=${omada}`,[geo_zoni]
-        //           );
-        //         if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
-        //           if (offer == wholesale) {
-        //             let new_price = await database.execute(
-        //               `select ekptosi from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
-        //             );
-        //             discound = new_price[0][0].ekptosi;
-        //             wholesale = wholesale - (wholesale * discound) / 100;
-        //           }
-        //         } else {
-        //           let ekptosi = await database.execute(
-        //             `select count(mtrl) as count from ekptosi where mtrl=${mtrl}`
-        //           );
-        //           if (ekptosi[0][0].count > 0) {
-        //             if (offer == wholesale) {
-        //               let new_price = await database.execute(
-        //                 `select asc(posotita) as posotita from ekptosi where mtrl=${mtrl}`
-        //               );
-        //               let pososotita = [
-        //                 new_price[0][0].posotita,
-        //                 new_price[0][1].pososotita,
-        //               ];
-        //               if (qty > posotita[1]) {
-        //                 new_preice = database.execute(
-        //                   `select ekptosi from ekptosi where mtrl${mtrl} and posotita=${posotita[1]}`
-        //                 );
-        //                 discound = new_price[0][0].ekptosi;
-        //                 wholesale = wholesale - (wholesale * discound) / 100;
-        //               } else {
-        //                 new_price = database.execute(
-        //                   `select ekptosi from ekptosi where mtrl=${mtrl} and posotita=${posotita[0]}`
-        //                 );
-        //                 discound = new_price[0][0].ekptosi;
-        //                 wholesale = wholesale - (wholesale * discound) / 100;
-        //               }
-        //             }
-        //           }
-        //         }
-        //       }
-        //     }
-        //   } else {
-        //     let timi_pelati_omada_eidous = await database.execute(
-        //       `select count(trdr) as count from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
-        //     );
-        //     if (timi_pelati_omada_eidous[0][0].count > 0) {
-        //       if (offer == wholesale) {
-        //         let new_price = await database.execute(
-        //           `select ekptosi from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
-        //         );
-        //         discound = new_price[0][0].ekptosi;
-        //         wholesale = wholesale - (wholesale * discound) / 100;
-        //       }
-        //     } else {
-        //       let katigoria_pelati_omada_eidous_geo_zoni =
-        //         await database.execute(
-        //           `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
-        //         );
-        //       if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
-        //         if (offer == wholesale) {
-        //           let new_price = await database.execute(
-        //             `select ekptosi from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
-        //           );
-        //           discound = new_price[0][0].ekptosi;
-        //           wholesale = wholesale - (wholesale * discound) / 100;
-        //         }
-        //       } else {
-        //         let ekptosi = await database.execute(
-        //           `select count(mtrl) as count from ekptosi where mtrl=${mtrl}`
-        //         );
-        //         if (ekptosi[0][0].count > 0) {
-        //           if (offer == wholesale) {
-        //             let new_price = await database.execute(
-        //               `select asc(posotita) as posotita from ekptosi where mtrl=${mtrl}`
-        //             );
-        //             let pososotita = [
-        //               new_price[0][0].posotita,
-        //               new_price[0][1].pososotita,
-        //             ];
-        //             if (qty > posotita[1]) {
-        //               new_preice = database.execute(
-        //                 `select ekptosi from ekptosi where mtrl${mtrl} and posotita=${posotita[1]}`
-        //               );
-        //               discound = new_price[0][0].ekptosi;
-        //               wholesale = wholesale - (wholesale * discound) / 100;
-        //             } else {
-        //               new_price = database.execute(
-        //                 `select ekptosi from ekptosi where mtrl=${mtrl} and posotita=${posotita[0]}`
-        //               );
-        //               discound = new_price[0][0].ekptosi;
-        //               wholesale = wholesale - (wholesale * discound) / 100;
-        //             }
-        //           }
-        //         }
-        //       }
-        //     }
+        let timi_pelati_eidos = await database.execute(
+          `select count(trdr) as count from timi_ana_pelati_eidos where trdr=${trdr} and mtrl=${mtrl} `
+        );
+        if (timi_pelati_eidos[0][0].count > 0) {
+          if (offer == wholesale) {
+            let new_price = await database.execute(
+              `select price from timi_ana_pelati_eidos where trdr=${trdr} and mtrl = ${mtrl}`
+            );
+            wholesale = new_price[0][0].price;
+          } 
+        } else {
+          if (trdr == "444") {
+            // ΕΚΠΤΩΣΕΙΣ ΑΝΑ ΥΠΟΚΑΤΑΣΤΗΜΑ EXALCO
+            let ekptosis_ana_upokatastima_exalco = await database.execute(
+              `select count(ypokat) as count from ekptoseis_ana_ypokat_exalco where ypokat=${ypokat} and omada=${omada}`
+            );
+            if (ekptosis_ana_upokatastima_exalco[0][0].count > 0) {
+              if (offer == wholesale) {
+                let new_price = await database.execute(
+                  `select ekptosi from ekptoseis_ana_ypokat_exalco where ypokat=${ypokat} and omada=${omada}`
+                );
+                discound = new_price[0][0].ekptosi;
+                wholesale = wholesale - (wholesale * discound) / 100;
+              }
+            } else {
+              let timi_pelati_omada_eidous = await database.execute(
+                `select count(trdr) as count from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+              );
+              if (timi_pelati_omada_eidous[0][0].count > 0) {
+                if (offer == wholesale) {
+                  let new_price = await database.execute(
+                    `select ekptosi from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+                  );
+                  discound = new_price[0][0].ekptosi;
+                  wholesale = wholesale - (wholesale * discound) / 100;
+                }
+              } else {
+                let katigoria_pelati_omada_eidous_geo_zoni =
+                  await database.execute(
+                    `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=`,`'?'`,` and omada=${omada}`,[geo_zoni]
+                  );
+                if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
+                  if (offer == wholesale) {
+                    let new_price = await database.execute(
+                      `select ekptosi from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                    );
+                    discound = new_price[0][0].ekptosi;
+                    wholesale = wholesale - (wholesale * discound) / 100;
+                  }
+                } else {
+                  let ekptosi = await database.execute(
+                    `select count(mtrl) as count from ekptosi where mtrl=${mtrl}`
+                  );
+                  if (ekptosi[0][0].count > 0) {
+                    if (offer == wholesale) {
+                      let new_price = await database.execute(
+                        `select asc(posotita) as posotita from ekptosi where mtrl=${mtrl}`
+                      );
+                      let pososotita = [
+                        new_price[0][0].posotita,
+                        new_price[0][1].pososotita,
+                      ];
+                      if (qty > posotita[1]) {
+                        new_preice = database.execute(
+                          `select ekptosi from ekptosi where mtrl${mtrl} and posotita=${posotita[1]}`
+                        );
+                        discound = new_price[0][0].ekptosi;
+                        wholesale = wholesale - (wholesale * discound) / 100;
+                      } else {
+                        new_price = database.execute(
+                          `select ekptosi from ekptosi where mtrl=${mtrl} and posotita=${posotita[0]}`
+                        );
+                        discound = new_price[0][0].ekptosi;
+                        wholesale = wholesale - (wholesale * discound) / 100;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } else {
+            let timi_pelati_omada_eidous = await database.execute(
+              `select count(trdr) as count from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+            );
+            if (timi_pelati_omada_eidous[0][0].count > 0) {
+              if (offer == wholesale) {
+                let new_price = await database.execute(
+                  `select ekptosi from timi_ana_pelati_omada_eidous where trdr=${trdr} and omada_eidous=${omada}`
+                );
+                discound = new_price[0][0].ekptosi;
+                wholesale = wholesale - (wholesale * discound) / 100;
+              }
+            } else {
+              let katigoria_pelati_omada_eidous_geo_zoni =
+                await database.execute(
+                  `select count(omada) as count from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                );
+              if (katigoria_pelati_omada_eidous_geo_zoni[0][0].count > 0) {
+                if (offer == wholesale) {
+                  let new_price = await database.execute(
+                    `select ekptosi from katigoria_pelati_omada_eidous_geo_zoni where empor_katig=${empor_katig} and geo_zoni=${geo_zoni} and omada=${omada}`
+                  );
+                  discound = new_price[0][0].ekptosi;
+                  wholesale = wholesale - (wholesale * discound) / 100;
+                }
+              } else {
+                let ekptosi = await database.execute(
+                  `select count(mtrl) as count from ekptosi where mtrl=${mtrl}`
+                );
+                if (ekptosi[0][0].count > 0) {
+                  if (offer == wholesale) {
+                    let new_price = await database.execute(
+                      `select asc(posotita) as posotita from ekptosi where mtrl=${mtrl}`
+                    );
+                    let pososotita = [
+                      new_price[0][0].posotita,
+                      new_price[0][1].pososotita,
+                    ];
+                    if (qty > posotita[1]) {
+                      new_preice = database.execute(
+                        `select ekptosi from ekptosi where mtrl${mtrl} and posotita=${posotita[1]}`
+                      );
+                      discound = new_price[0][0].ekptosi;
+                      wholesale = wholesale - (wholesale * discound) / 100;
+                    } else {
+                      new_price = database.execute(
+                        `select ekptosi from ekptosi where mtrl=${mtrl} and posotita=${posotita[0]}`
+                      );
+                      discound = new_price[0][0].ekptosi;
+                      wholesale = wholesale - (wholesale * discound) / 100;
+                    }
+                  }
+                }
+              }
+            }
           }
           database
             .execute(
@@ -1015,8 +1015,8 @@ exports.addToCart = async (req, res, next) => {
               }
               next(err);
             });
-        
-      
+        }
+      }
     } else {
       
       let select = await database.execute(
