@@ -679,8 +679,8 @@ exports.removeCartItem = async (req, res, next) => {
     let group_id = req.query.group_id;
      console.log(id);
     switch (id) {
-      case "1":
-        this.clearOne(req, res, next, trdr);
+      case "2":
+        this.clearOne(req, res, next, trdr,group_id);
         break;
       default:
         this.clearAll(req, res, next, trdr);
@@ -693,7 +693,7 @@ exports.removeCartItem = async (req, res, next) => {
 // clear all cart 
 exports.clearAll = (req, res, next, trdr) => {
   database
-    .execute(`delete from products_cart where p_trdr=?`, [trdr])
+    .execute(`delete from products_cart where p_trdr=${trdr}`)
     .then((results) => {
       console.log(results[0])
       res.status(200).json({ message: "Cart Cleared", products: [] });
@@ -706,10 +706,10 @@ exports.clearAll = (req, res, next, trdr) => {
     });
 };
 // remove one cart item
-exports.clearOne =  (req, res, next, trdr) => {
+exports.clearOne =  (req, res, next, trdr,group_id) => {
   database
     .execute(
-      `delete from products_cart where p_trdr=${trdr} and group_id=${req.query.group_id}`
+      `delete from products_cart where p_trdr=${trdr} and group_id=${group_id}`
     )
     .then(async(results) => {
       await this.fetchCartItems(req, res, next);
