@@ -77,9 +77,9 @@ exports.getProductsRelated = async (req, res, next) => {
     bad = true;
   } else {
     let mtrl = req.query.mtrl;
-    console.log(
-      `SELECT p_related_mtrl FROM product_page_related WHERE p_mtrl=${mtrl}`
-    );
+    // // console.log(
+    //   `SELECT p_related_mtrl FROM product_page_related WHERE p_mtrl=${mtrl}`
+    // );
     let related_mtrl = await database.execute(
       `SELECT p_related_mtrl FROM product_page_related WHERE p_mtrl= ${mtrl} `
     );
@@ -149,7 +149,7 @@ exports.getProductsRelated = async (req, res, next) => {
 // get home page offer
 exports.getOffers = async (req, res, next) => {
   let offerMtrl = await database.execute("select * from products_offer");
-  console.log(offerMtrl[0]);
+  // console.log(offerMtrl[0]);
   let product = await database.execute(
     `select * from products where p_mtrl =${offerMtrl[0][0].product_mtrl}`
   );
@@ -321,7 +321,7 @@ exports.deleteAll = (req, res, next, trdr) => {
   database
     .execute(`DELETE FROM favorites WHERE c_trdr=${trdr}`)
     .then((result) => {
-      console.log(result);
+      // console.log(result);
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -485,7 +485,7 @@ exports.getSingelCartitem = async (
   wholesale,
   discount
 ) => {
-  console.log("PEOS");
+  // console.log("PEOS");
   let product = await database.execute(
     `SELECT * FROM products WHERE p_mtrl=${mtrl}`
   );
@@ -541,7 +541,7 @@ exports.getSingelCartitem = async (
     texnikos_kodikos: product[0][0].p_code_texniko,
   };
 
-  console.log(returnProd);
+  // console.log(returnProd);
   return returnProd;
 };
 // get seen recently products
@@ -620,7 +620,7 @@ exports.findMosquiProduct = async (req, res, next) => {
     if (findProd[0].length == 0) {
       res.status(404).json({ message: "No Product Found" });
     } else {
-      console.log(findProd[0]);
+      // console.log(findProd[0]);
       res.status(200).json({
         message: "Product Found",
         product: await this.getSingelProduct(findProd[0][0].p_mtrl),
@@ -644,7 +644,7 @@ exports.findRelatedProducts = async (req, res, next) => {
     let scope1 = await database.execute(
       `select * from related_products where mtrl=${mtrl} and scope=1`
     );
-    console.log(scope1[0]);
+    // console.log(scope1[0]);
     for (let i = 0; i < scope1[0].length; i++) {
       returnProd.push(await this.getSingelProduct(scope1[0][i].related_mtrl));
     }
@@ -668,18 +668,18 @@ exports.removeCartItem = async (req, res, next) => {
   ) {
     res.status(404).json({ message: "Fill The Required Fields" });
   } else {
-    console.log("hello");
+    // console.log("hello");
     let mtrl = req.query.mtrl;
     let trdr = req.query.trdr;
     let id = req.query.id;
     let group_id = req.query.group_id;
-    console.log(id);
+    // console.log(id);
     switch (id) {
       case "1":
         this.clearAll(req, res, next, trdr);
         break;
       case "2":
-        console.log("hello");
+        // console.log("hello");
         this.clearOne(req, res, next, trdr);
         break;
     }
@@ -768,6 +768,7 @@ exports.addToCart = async (req, res, next) => {
       let find = await database.execute(
         `select * from products_cart where p_mtrl=${mtrl} and p_trdr=${trdr}`
       );
+      
       if (find[0].length > 0) {
         if (p_page == 2) {
           database
@@ -872,7 +873,7 @@ exports.addToCart = async (req, res, next) => {
               `select price from timi_ana_pelati_eidos where trdr=${trdr} and mtrl = ${mtrl}`
             );
             wholesale = new_price[0][0].price;
-          }
+          } 
         } else {
           if (trdr == "444") {
             // ΕΚΠΤΩΣΕΙΣ ΑΝΑ ΥΠΟΚΑΤΑΣΤΗΜΑ EXALCO
