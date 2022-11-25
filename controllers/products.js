@@ -420,13 +420,13 @@ exports.getSingelProduct = async (mtrl) => {
 };
 // fetch cart products
 exports.fetchCartItems =  (req, res, next) => {
-  console.log(req.query);
+  console.log(req.body);
   let bad = false;
   let cartItem = [];
-  if (!req.query.trdr) {
+  if (!req.body.trdr) {
     bad = true;
   } else {
-    let trdr = req.query.trdr;
+    let trdr = req.body.trdr;
      database.execute(
       `SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`
     ).then(async results=>{
@@ -666,10 +666,10 @@ exports.findRelatedProducts = async (req, res, next) => {
 exports.removeCartItem = async (req, res, next) => {
   let bad = false;
   if (
-    !req.query.mtrl ||
-    !req.query.trdr ||
-    !req.query.id ||
-    !req.query.group_id
+    !req.body.mtrl ||
+    !req.body.trdr ||
+    !req.body.id ||
+    !req.body.group_id
   ) {
     console.log("hello");
     res.status(404).json({ message: "Fill The Required Fields" });

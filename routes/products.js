@@ -10,7 +10,7 @@ router.get('/getProducts',productsController.getProducts);
 router.get('/getAllproductsRelated',productsController.getProductsRelated);
 router.delete('/deleteOffer',productsController.deleteOffer);
 router.get('/favorites',productsController.favorites)
-router.get('/fetchCartItems',productsController.fetchCartItems);
+router.post('/fetchCartItems',productsController.fetchCartItems);
 router.get('/seeEarlier',productsController.seeEarlier);
 router.get('/findMosquiProduct',productsController.findMosquiProduct);
 router.get('/findRelatedProducts',productsController.findRelatedProducts);
