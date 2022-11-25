@@ -422,13 +422,15 @@ exports.getSingelProduct = async (mtrl) => {
 exports.fetchCartItems = async (req, res, next) => {
   let bad = false;
   let cartItem = [];
+  let cartItems;
   if (!req.query.trdr) {
     bad = true;
   } else {
     let trdr = req.query.trdr;
-    let cartItems = await database.execute(
+     cartItems = await database.execute(
       `SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`
     );
+    
     for (let i = 0; i < cartItems[0].length; i++) {
       cartItem.push({
         mtrl: cartItems[0][i].p_mtrl,
@@ -466,6 +468,7 @@ exports.fetchCartItems = async (req, res, next) => {
     res.status(200).json({
       message: "Cart Items",
       products: cartItem,
+      test:cartItems
     });
   }
 
