@@ -19,9 +19,7 @@ app.use((req,res,next)=>{
       'Access-Control-Allow-Methods',
       'OPTIONS, GET, POST, PUT, PATCH, DELETE'
     );
-    res.setHeader('Access-Control-Allow-Headers', ' Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-    res.setHeader('Access-Control-Allow-Headers','access')
-    res.setHeader('Content-Type','application/json; charset=utf-8')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 
 })
