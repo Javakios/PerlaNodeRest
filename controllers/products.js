@@ -680,11 +680,12 @@ exports.removeCartItem = async (req, res, next) => {
      console.log(id);
     switch (id) {
       case 1:
-        this.clearAll(req, res, next, trdr);
-        break;
-      case 2:
-        // console.log("hello");
         this.clearOne(req, res, next, trdr);
+        break;
+      default:
+        this.clearAll(req, res, next, trdr);
+        // console.log("hello");
+        
         break;
     }
   }
