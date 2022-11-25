@@ -675,7 +675,7 @@ exports.removeCartItem = async (req, res, next) => {
     let trdr = req.query.trdr;
     let id = req.query.id;
     let group_id = req.query.group_id;
-    // console.log(id);
+     console.log(id);
     switch (id) {
       case "1":
         this.clearAll(req, res, next, trdr);
@@ -708,8 +708,8 @@ exports.clearOne =  (req, res, next, trdr) => {
     .execute(
       `delete from products_cart where p_trdr=${trdr} and group_id=${req.query.group_id}`
     )
-    .then((results) => {
-      this.fetchCartItems(req, res, next);
+    .then(async(results) => {
+      await this.fetchCartItems(req, res, next);
     })
     .catch((err) => {
       if (!err.statusCode) {
