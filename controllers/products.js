@@ -679,10 +679,10 @@ exports.removeCartItem = async (req, res, next) => {
     let group_id = req.query.group_id;
      console.log(id);
     switch (id) {
-      case "1":
+      case 1:
         this.clearAll(req, res, next, trdr);
         break;
-      case "2":
+      case 2:
         // console.log("hello");
         this.clearOne(req, res, next, trdr);
         break;
