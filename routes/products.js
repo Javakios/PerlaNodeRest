@@ -14,6 +14,6 @@ router.post('/fetchCartItems',productsController.fetchCartItems);
 router.get('/seeEarlier',productsController.seeEarlier);
 router.get('/findMosquiProduct',productsController.findMosquiProduct);
 router.get('/findRelatedProducts',productsController.findRelatedProducts);
-router.get('/removeCartItem',productsController.removeCartItem);
+router.post('/removeCartItem',productsController.removeCartItem);
 
 module.exports = router;

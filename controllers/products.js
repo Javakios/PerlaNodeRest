@@ -702,7 +702,7 @@ exports.clearAll =async (req, res, next, trdr) => {
     .then((results) => {
       console.log(results[0])
       if (results[0].affectedRows) {
-        res.status(200).json({ message: "Cart Cleared" });
+        res.status(200).json({ message: "Cart Cleared",products:[] });
       } else {
         this.fetchCartItems(req, res, next, trdr);
       
