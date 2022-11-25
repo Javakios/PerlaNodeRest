@@ -690,6 +690,7 @@ exports.clearAll = (req, res, next, trdr) => {
   database
     .execute(`delete from products_cart where p_trdr=${trdr}`)
     .then((results) => {
+      console.log(results[0])
       res.status(200).json({ message: "Cart Cleared", products: [] });
     })
     .catch((err) => {
