@@ -419,31 +419,33 @@ exports.getSingelProduct = async (mtrl) => {
   return returnProd;
 };
 // fetch cart products
-exports.fetchCartItems = async (req, res, next) => {
+exports.fetchCartItems =  (req, res, next) => {
   let bad = false;
   let cartItem = [];
   if (!req.query.trdr) {
     bad = true;
   } else {
     let trdr = req.query.trdr;
-    let cartItems = await database.execute(
+    let cartItems =  database.execute(
       `SELECT p_mtrl,p_qty,group_id,p_wholesale,p_disc FROM products_cart WHERE p_trdr=${trdr}`
-    );
-    for (let i = 0; i < cartItems[0].length; i++) {
-      cartItem.push(
-        await this.getSingelCartitem(
-          cartItems[0][i].p_mtrl,
-          cartItems[0][i].p_qty,
-          cartItems[0][i].group_id,
-          cartItems[0][i].p_wholesale,
-          cartItems[0][i].p_disc
-        )
-      );
-    }
-     res.status(200).json({
-      message: "Cart Items",
-      products: cartItem,
-      cartItems:cartItems[0]
+    ).then(async results=>{
+      for (let i = 0; i < cartItems[0].length; i++) {
+        cartItem.push(
+          await this.getSingelCartitem(
+            cartItems[0][i].p_mtrl,
+            cartItems[0][i].p_qty,
+            cartItems[0][i].group_id,
+            cartItems[0][i].p_wholesale,
+            cartItems[0][i].p_disc
+          )
+        );
+      }
+       res.status(200).json({
+        message: "Cart Items",
+        products: cartItem,
+        cartItems:cartItems[0]
+    })
+    
     });
   }
 
