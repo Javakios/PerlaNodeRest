@@ -139,7 +139,7 @@ exports.getProductsRelated = async (req, res, next) => {
   }
   // // database.end();
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   } else {
     res
       .status(200)
@@ -272,7 +272,7 @@ exports.deleteOffer = async (req, res, next) => {
   }
 
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   } else {
     res.status(200).json({
       message: "Offer Deleted",
@@ -306,7 +306,7 @@ exports.favorites = async (req, res, next) => {
   }
 
   if (bad) {
-    res.status(404).json({ message: "Fill The required Fields" });
+    res.status(402).json({ message: "Fill The required Fields" });
   }
 };
 // delete one favorite
@@ -451,7 +451,7 @@ exports.fetchCartItems = (req, res, next) => {
   }
 
   if (bad) {
-    res.status(404).json({ message: "Fill The required Fields" });
+    res.status(402).json({ message: "Fill The required Fields" });
   } else {
   }
 };
@@ -594,7 +594,7 @@ exports.seeEarlier = async (req, res, next) => {
     }
   }
   if (bad) {
-    res.status(404).json({ message: "Fill The required Fields" });
+    res.status(402).json({ message: "Fill The required Fields" });
   } else {
     res.status(200).json({ message: "Product Added" });
   }
@@ -622,7 +622,7 @@ exports.findMosquiProduct = async (req, res, next) => {
       `SELECT * FROM products WHERE p_subcategory=${subcategory} AND color_fabric_id=${fabric} AND color_profile_id=${profile}  and (min_width < ${width} and max_width > ${width}) and (min_height < ${height} and max_height>${height})`
     );
     if (findProd[0].length == 0) {
-      res.status(404).json({ message: "No Product Found" });
+      res.status(402).json({ message: "No Product Found" });
     } else {
       // console.log(findProd[0]);
       res.status(200).json({
@@ -633,7 +633,7 @@ exports.findMosquiProduct = async (req, res, next) => {
   }
 
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   }
 };
 // find related products
@@ -654,7 +654,7 @@ exports.findRelatedProducts = async (req, res, next) => {
     }
   }
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   } else {
     res
       .status(200)
@@ -666,7 +666,7 @@ exports.removeCartItem = async (req, res, next) => {
   let bad = false;
   if (!req.body.mtrl || !req.body.trdr || !req.body.id || !req.body.group_id) {
     console.log("hello");
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   } else {
     console.log("hello");
     let mtrl = req.body.mtrl;
@@ -1240,6 +1240,59 @@ exports.addToCart = async (req, res, next) => {
     }
   }
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   }
 };
+exports.addProductBasedOnGrouping =async (req,res,next)=>{
+    // let scope2 = [];
+    // let scope3 = [];
+    if(!req.body.product_mtrl || !req.body.grouping){
+        res.status(402).json({message:"Fill The Required Fields"});
+    }else{
+        let mtrl = req.body.product_mtrl;
+        let grouping = req.body.grouping;
+        scope2 = await this.getScope2(mtrl,grouping);
+        scope3 = await this.getScope3(mtrl)
+        res.status(200).json({
+            message:"Crowns And Adaptors",
+            Scope2:scope2,
+            Scope3: scope3
+        })
+    }
+}
+
+exports.getScope2 = async (mtrl,grouping) =>{
+    let scope2 = [];
+    try{
+        let relatedProds = await database
+            .execute(`
+            select related_mtrl,quantity from related_products where mtrl=${mtrl} and scope=2 and grouping=${grouping}
+            `)
+            // console.log(relatedProds[0]);
+        for(let i = 0 ; i < relatedProds[0].length ; i++){
+            scope2[i] = await this.getSingelProduct(relatedProds[0][i].related_mtrl)
+        }
+        // console.log(scope2);
+        return scope2;
+    }catch(err){
+    err.statusCode = 500;
+        throw err;
+    }
+}
+exports.getScope3 = async (mtrl)=>{
+
+    let scope3 = [];
+    try{
+        let relatedProds = await database
+        .execute(`select * from related_products where mtrl=${mtrl} and scope=3`)
+        for(let i = 0 ; i < relatedProds[0].length;i++){
+            scope3[i] = await this.getSingelProduct(relatedProds[0][i].related_mtrl)
+        }
+        return scope3;
+    }catch(err){
+        err.statusCode = 500;
+        throw err;
+    }
+
+}
+
