@@ -1052,7 +1052,7 @@ exports.addToCart = async (req, res, next) => {
           if (dec == "2") {
             database
               .execute(
-                `update products_cart set p_qty=p_qty-1 where group_id=${group_id} and p_trdr=${trdr}`
+                `update products_cart set p_qty=p_qty-1 where group_id=${group_id} and p_mtrl=${mtrl} and p_trdr=${trdr}`
               )
               .then((results) => {
                 res.status(200).json({
@@ -1068,7 +1068,7 @@ exports.addToCart = async (req, res, next) => {
           } else {
             database
               .execute(
-                `update products_cart set p_qty=p_qty+1 where group_id=${group_id} and p_trdr=${trdr}`
+                `update products_cart set p_qty=p_qty+1 where group_id=${group_id} and p_mtrl=${mtrl} and p_trdr=${trdr}`
               )
               .then((results) => {
                 res.status(200).json({
