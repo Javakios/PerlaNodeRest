@@ -1254,10 +1254,11 @@ exports.addProductBasedOnGrouping =async (req,res,next)=>{
         scope2 = await this.getScope2(mtrl,grouping);
         scope3 = await this.getScope3(mtrl)
         res.status(200).json({
-            message:"Crowns And Adaptors",
+            message:"Crown And Adaptors",
             Scope2:scope2,
             Scope3: scope3
         })
+
     }
 }
 
