@@ -7,6 +7,7 @@ const path = require('path');
 
 const productsRoute = require('./routes/products');
 const categoriesRoute = require('./routes/categories');
+const authRoutes = require('./routes/auth');
 // initialize server
 
 const app = express();
@@ -23,8 +24,11 @@ app.use((req,res,next)=>{
     next();
 
 })
+// auth routes
+app.use('/auth',authRoutes);
 // products routes
 app.use('/products',productsRoute); 
+// categories routes
 app.use('/categories',categoriesRoute);
 
 app.use((error,req,res,next)=>{
