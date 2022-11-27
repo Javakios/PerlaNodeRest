@@ -1243,57 +1243,85 @@ exports.addToCart = async (req, res, next) => {
     res.status(402).json({ message: "Fill The Required Fields" });
   }
 };
-exports.addProductBasedOnGrouping =async (req,res,next)=>{
-    // let scope2 = [];
-    // let scope3 = [];
-    if(!req.body.product_mtrl || !req.body.grouping){
-        res.status(402).json({message:"Fill The Required Fields"});
-    }else{
-        let mtrl = req.body.product_mtrl;
-        let grouping = req.body.grouping;
-        scope2 = await this.getScope2(mtrl,grouping);
-        scope3 = await this.getScope3(mtrl)
-        res.status(200).json({
-            message:"Crown And Adaptors",
-            Scope2:scope2,
-            Scope3: scope3
-        })
+exports.addProductBasedOnGrouping = async (req, res, next) => {
+  // let scope2 = [];
+  // let scope3 = [];
+  if (!req.body.product_mtrl || !req.body.grouping) {
+    res.status(402).json({ message: "Fill The Required Fields" });
+  } else {
+    let mtrl = req.body.product_mtrl;
+    let grouping = req.body.grouping;
+    scope2 = await this.getScope2(mtrl, grouping);
+    scope3 = await this.getScope3(mtrl);
+    res.status(200).json({
+      message: "Crown And Adaptors",
+      Scope2: scope2,
+      Scope3: scope3,
+    });
+  }
+};
 
-    }
-}
-
-exports.getScope2 = async (mtrl,grouping) =>{
-    let scope2 = [];
-    try{
-        let relatedProds = await database
-            .execute(`
+exports.getScope2 = async (mtrl, grouping) => {
+  let scope2 = [];
+  try {
+    let relatedProds = await database.execute(`
             select related_mtrl,quantity from related_products where mtrl=${mtrl} and scope=2 and grouping=${grouping}
-            `)
-            // console.log(relatedProds[0]);
-        for(let i = 0 ; i < relatedProds[0].length ; i++){
-            scope2[i] = await this.getSingelProduct(relatedProds[0][i].related_mtrl)
-        }
-        // console.log(scope2);
-        return scope2;
-    }catch(err){
+            `);
+    // console.log(relatedProds[0]);
+    for (let i = 0; i < relatedProds[0].length; i++) {
+      scope2[i] = await this.getSingelProduct(relatedProds[0][i].related_mtrl);
+    }
+    // console.log(scope2);
+    return scope2;
+  } catch (err) {
     err.statusCode = 500;
-        throw err;
+    throw err;
+  }
+};
+exports.getScope3 = async (mtrl) => {
+  let scope3 = [];
+  try {
+    let relatedProds = await database.execute(
+      `select * from related_products where mtrl=${mtrl} and scope=3`
+    );
+    for (let i = 0; i < relatedProds[0].length; i++) {
+      scope3[i] = await this.getSingelProduct(relatedProds[0][i].related_mtrl);
     }
-}
-exports.getScope3 = async (mtrl)=>{
+    return scope3;
+  } catch (err) {
+    err.statusCode = 500;
+    throw err;
+  }
+};
 
-    let scope3 = [];
-    try{
-        let relatedProds = await database
-        .execute(`select * from related_products where mtrl=${mtrl} and scope=3`)
-        for(let i = 0 ; i < relatedProds[0].length;i++){
-            scope3[i] = await this.getSingelProduct(relatedProds[0][i].related_mtrl)
-        }
-        return scope3;
-    }catch(err){
-        err.statusCode = 500;
-        throw err;
+exports.search = async (req, res, next) => {
+  let search = req.body.search;
+  if (!search) {
+    res.status(402).json({ message: "Fill The Required Fields" });
+  } else {
+    if (search == "100") {
+      await this.getProducts(req, res, next);
+    } else {
+      database
+        .execute(
+          `select * from products where p_kod like '%${search}%'  or p_name like '%${search}%'`
+        )
+        .then(async (results) => {
+          let returnprod = [];
+          for (let i = 0; i < results[0].length; i++) {
+            returnprod[i] = await this.getSingelProduct(results[0][i].p_mtrl);
+          }
+          res.status(200).json({
+            message: "Found " + results[0].length + " Products",
+            products: returnprod,
+          });
+        })
+        .catch((err) => {
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
+        });
     }
-
-}
-
+  }
+};
