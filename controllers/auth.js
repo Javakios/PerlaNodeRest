@@ -43,7 +43,7 @@ exports.login = (req, res, next) => {
                 phone02: results[0][0].c_phone02,
                 doy: results[0][0].c_doy,
                 afm: results[0][0].c_afm,
-                isAdmin: results[0][0].c_isAdmin,
+                isAdmin: results[0][0].isAdmin,
                 trdr: results[0][0].c_id,
                 email: results[0][0].c_email,
                 emporiki_katigoria: results[0][0].c_emporiki_katigoria,
