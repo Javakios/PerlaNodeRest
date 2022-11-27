@@ -32,6 +32,7 @@ exports.login = (req, res, next) => {
                 "somesupersecretsecret"
               );
               res.status(200).json({
+                success:1,
                 message: "You Have Successfully Logged In",
                 token: token,
                 name: results[0][0].c_eponimia,
