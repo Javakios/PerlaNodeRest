@@ -414,7 +414,7 @@ exports.getSingelProduct = async (mtrl) => {
     product_name_eng: product[0][0].onoma_product_eng,
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
-    qty:1
+    qty: 1,
   };
 
   return returnProd;
@@ -725,7 +725,7 @@ exports.clearOne = async (req, res, next, trdr, group_id) => {
 };
 
 exports.addToCart = async (req, res, next) => {
-  console.log(req.body.stock)
+  console.log(req.body.stock);
   let bad = false;
   if (
     !req.body.mtrl ||
@@ -1337,14 +1337,14 @@ exports.getSeeEarlier = (req, res, next) => {
           select * from see_earlier where c_trdr=${trdr}
     `
       )
-      .then(async products=> {
+      .then(async (products) => {
         let returnProds = [];
         for (let i = 0; i < products[0].length; i++) {
           returnProds[i] = await this.getSingelProduct(products[0][i].p_mtrl);
         }
         res.status(200).json({
           message: returnProds.length + " Products Found",
-          products: returnProds
+          products: returnProds,
         });
       })
       .catch((err) => {
@@ -1355,27 +1355,72 @@ exports.getSeeEarlier = (req, res, next) => {
       });
   }
 };
-exports.offers = (req,res,next) =>{
+exports.offers = (req, res, next) => {
   const mtrl = req.body.mtrl;
   const offer = req.body.offer;
   const discount = req.body.discount;
-  if(!mtrl || !offer || !discount){
-    res.send(402).json({message:"Fill The Required Fields"})
-  }else{
+  if (!mtrl || !offer || !discount) {
+    res.send(402).json({ message: "Fill The Required Fields" });
+  } else {
     database
-    .execute(
-      `update products set p_offer=${offer} ,p_dicount=${discount} where p_mtrl=${mtrl}`
-    )
-    .then(async results=>{
-        await this.getProducts(req,res,next);
-    })
-    .catch(err=>{
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    })
+      .execute(
+        `update products set p_offer=${offer} ,p_dicount=${discount} where p_mtrl=${mtrl}`
+      )
+      .then(async (results) => {
+        await this.getProducts(req, res, next);
+      })
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
   }
-
-
-}
+};
+exports.homeOffer = (req, res, next) => {
+  const mtrl = req.body.mtrl;
+  const discount = req.body.discount;
+  if (!mtrl || !discount) {
+    res.status(402).json({ message: "Fill The Require Fields" });
+  } else {
+    database
+      .execute(`select * from products_offer`)
+      .then((results) => {
+        if (results[0].length == 0) {
+          database
+            .execute(
+              `insert into product_offer(product_mtrl,p_offer_disc) values (${mtrl},${discount})`
+            )
+            .then(async(inserted) => {
+                await this.getProducts(req,res,next);
+            })
+            .catch((err) => {
+              if (!err.statusCode) {
+                err.statusCode = 500;
+              }
+              next(err);
+            });
+        } else {
+          database
+          .execute(
+            `update products_offer set product_mtrl=${mtrl},p_offer_disc=${discount}`
+          )
+          .then(async updated=>{
+            await this.getProducts(req,res,next);
+          })
+          .catch(err=>{
+            if(!err.statusCode){
+              err.statusCode = 500;
+            }
+            next(err);
+          })
+        }
+      })
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  }
+};

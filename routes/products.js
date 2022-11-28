@@ -19,4 +19,5 @@ router.post('/addProductBasedOnGrouping',productsController.addProductBasedOnGro
 router.post('/search',productsController.search);
 router.post('/getSeeEarlier',productsController.getSeeEarlier);
 router.post('/offers',productsController.offers);
+router.post('/homepageOffer',productsController.homeOffer);
 module.exports = router;
