@@ -31,9 +31,9 @@ exports.getProducts = (req, res, next) => {
           omada: products[0][i].p_omada,
           name: products[0][i].p_name,
           name1: products[0][i].p_name1,
-          retailPrice: products[0][i].p_retail_price,
-          wholesalePrice: products[0][i].p_wholesale_price,
-          offer: products[0][i].p_offer,
+          retailPrice: products[0][i].p_retail_price.toFixed(2),
+          wholesalePrice: products[0][i].p_wholesale_price.toFixed(2),
+          offer: products[0][i].p_offer.toFixed(2),
           hasOffer: hasOffer,
           homePageOffer: homeOffer,
           discount: products[0][i].p_dicount,
@@ -110,9 +110,9 @@ exports.getProductsRelated = async (req, res, next) => {
         omada: prod[0][0].p_omada,
         name: prod[0][0].p_name,
         name1: prod[0][0].p_name1,
-        retailPrice: prod[0][0].p_retail_price,
-        wholesalePrice: prod[0][0].p_wholesale_price,
-        offer: prod[0][0].p_offer,
+        retailPrice: prod[0][0].p_retail_price.toFixed(2),
+        wholesalePrice: prod[0][0].p_wholesale_price.toFixed(2),
+        offer: prod[0][0].p_offer.toFixed(2),
         hasOffer: hasOffer,
         homePageOffer: homeOffer,
         discount: prod[0][0].p_dicount,
@@ -139,7 +139,7 @@ exports.getProductsRelated = async (req, res, next) => {
   }
   // // database.end();
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   } else {
     res
       .status(200)
@@ -174,9 +174,9 @@ exports.getOffers = async (req, res, next) => {
     omada: product[0][0].p_omada,
     name: product[0][0].p_name,
     name1: product[0][0].p_name1,
-    retailPrice: product[0][0].p_retail_price,
-    wholesalePrice: product[0][0].p_wholesale_price,
-    offer: product[0][0].p_offer,
+    retailPrice: product[0][0].p_retail_price.toFixed(2),
+    wholesalePrice: product[0][0].p_wholesale_price.toFixed(2),
+    offer: product[0][0].p_offer.toFixed(2),
     hasOffer: hasOffer,
     homePageOffer: homeOffer,
     discount: product[0][0].p_dicount,
@@ -242,9 +242,9 @@ exports.deleteOffer = async (req, res, next) => {
         omada: products[0][i].p_omada,
         name: products[0][i].p_name,
         name1: products[0][i].p_name1,
-        retailPrice: products[0][i].p_retail_price,
-        wholesalePrice: products[0][i].p_wholesale_price,
-        offer: products[0][i].p_offer,
+        retail: products[0][i].p_retail_price.toFixed(2),
+        wholesale: products[0][i].p_wholesale_price.toFixed(2),
+        offer: products[0][i].p_offer.toFixed(2),
         hasOffer: hasOffer,
         homePageOffer: homeOffer,
         discount: products[0][i].p_dicount,
@@ -255,15 +255,15 @@ exports.deleteOffer = async (req, res, next) => {
         desmeumena: products[0][i].p_desmeumena,
         category: products[0][i].p_category,
         subcategory: products[0][i].p_subcategory,
-        image: products[0][i].p_image,
+        img: products[0][i].p_image,
         otherImages: otherImages,
         description: products[0][i].p_desc,
         pdf: products[0][i].p_pdf,
         video: products[0][i].p_yt_vid,
         data_sheet: products[0][i].p_data_sheet,
         data_sheet_eng: products[0][i].data_sheet_eng,
-        onoma: products[0][i].onoma_product,
-        onoma_eng: products[0][i].onoma_product_eng,
+        product_name: products[0][i].onoma_product,
+        product_name_eng: products[0][i].onoma_product_eng,
         kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
         texnikos_kodikos: products[0][i].p_code_texniko,
       };
@@ -272,7 +272,7 @@ exports.deleteOffer = async (req, res, next) => {
   }
 
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   } else {
     res.status(200).json({
       message: "Offer Deleted",
@@ -306,7 +306,7 @@ exports.favorites = async (req, res, next) => {
   }
 
   if (bad) {
-    res.status(404).json({ message: "Fill The required Fields" });
+    res.status(402).json({ message: "Fill The required Fields" });
   }
 };
 // delete one favorite
@@ -390,9 +390,9 @@ exports.getSingelProduct = async (mtrl) => {
     omada: product[0][0].p_omada,
     name: product[0][0].p_name,
     name1: product[0][0].p_name1,
-    retailPrice: product[0][0].p_retail_price,
-    wholesalePrice: product[0][0].p_wholesale_price,
-    offer: product[0][0].p_offer,
+    retailPrice: product[0][0].p_retail_price.toFixed(2),
+    wholesalePrice: product[0][0].p_wholesale_price.toFixed(2),
+    offer: product[0][0].p_offer.toFixed(2),
     hasOffer: hasOffer,
     homePageOffer: homeOffer,
     discount: product[0][0].p_dicount,
@@ -451,7 +451,7 @@ exports.fetchCartItems = (req, res, next) => {
   }
 
   if (bad) {
-    res.status(404).json({ message: "Fill The required Fields" });
+    res.status(402).json({ message: "Fill The required Fields" });
   } else {
   }
 };
@@ -517,9 +517,9 @@ exports.getSingelCartitem = async (
     omada: product[0][0].p_omada,
     name: product[0][0].p_name,
     name1: product[0][0].p_name1,
-    retailPrice: product[0][0].p_retail_price,
+    retailPrice: product[0][0].p_retail_price.toFixed(2),
     wholesalePrice: wholesale,
-    offer: product[0][0].p_offer,
+    offer: product[0][0].p_offer.toFixed(2),
     hasOffer: hasOffer,
     homePageOffer: homeOffer,
     qty: qty,
@@ -594,7 +594,7 @@ exports.seeEarlier = async (req, res, next) => {
     }
   }
   if (bad) {
-    res.status(404).json({ message: "Fill The required Fields" });
+    res.status(402).json({ message: "Fill The required Fields" });
   } else {
     res.status(200).json({ message: "Product Added" });
   }
@@ -622,7 +622,7 @@ exports.findMosquiProduct = async (req, res, next) => {
       `SELECT * FROM products WHERE p_subcategory=${subcategory} AND color_fabric_id=${fabric} AND color_profile_id=${profile}  and (min_width < ${width} and max_width > ${width}) and (min_height < ${height} and max_height>${height})`
     );
     if (findProd[0].length == 0) {
-      res.status(404).json({ message: "No Product Found" });
+      res.status(402).json({ message: "No Product Found" });
     } else {
       // console.log(findProd[0]);
       res.status(200).json({
@@ -633,7 +633,7 @@ exports.findMosquiProduct = async (req, res, next) => {
   }
 
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   }
 };
 // find related products
@@ -654,7 +654,7 @@ exports.findRelatedProducts = async (req, res, next) => {
     }
   }
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   } else {
     res
       .status(200)
@@ -666,7 +666,7 @@ exports.removeCartItem = async (req, res, next) => {
   let bad = false;
   if (!req.body.mtrl || !req.body.trdr || !req.body.id || !req.body.group_id) {
     console.log("hello");
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
   } else {
     console.log("hello");
     let mtrl = req.body.mtrl;
@@ -1052,7 +1052,7 @@ exports.addToCart = async (req, res, next) => {
           if (dec == "2") {
             database
               .execute(
-                `update products_cart set p_qty=p_qty-1 where group_id=${group_id} and p_trdr=${trdr}`
+                `update products_cart set p_qty=p_qty-1 where group_id=${group_id} and p_mtrl=${mtrl} and p_trdr=${trdr}`
               )
               .then((results) => {
                 res.status(200).json({
@@ -1068,7 +1068,7 @@ exports.addToCart = async (req, res, next) => {
           } else {
             database
               .execute(
-                `update products_cart set p_qty=p_qty+1 where group_id=${group_id} and p_trdr=${trdr}`
+                `update products_cart set p_qty=p_qty+1 where group_id=${group_id} and p_mtrl=${mtrl} and p_trdr=${trdr}`
               )
               .then((results) => {
                 res.status(200).json({
@@ -1240,6 +1240,88 @@ exports.addToCart = async (req, res, next) => {
     }
   }
   if (bad) {
-    res.status(404).json({ message: "Fill The Required Fields" });
+    res.status(402).json({ message: "Fill The Required Fields" });
+  }
+};
+exports.addProductBasedOnGrouping = async (req, res, next) => {
+  // let scope2 = [];
+  // let scope3 = [];
+  if (!req.body.product_mtrl || !req.body.grouping) {
+    res.status(402).json({ message: "Fill The Required Fields" });
+  } else {
+    let mtrl = req.body.product_mtrl;
+    let grouping = req.body.grouping;
+    scope2 = await this.getScope2(mtrl, grouping);
+    scope3 = await this.getScope3(mtrl);
+    res.status(200).json({
+      message: "Crown And Adaptors",
+      Scope2: scope2,
+      Scope3: scope3,
+    });
+  }
+};
+
+exports.getScope2 = async (mtrl, grouping) => {
+  let scope2 = [];
+  try {
+    let relatedProds = await database.execute(`
+            select related_mtrl,quantity from related_products where mtrl=${mtrl} and scope=2 and grouping=${grouping}
+            `);
+    // console.log(relatedProds[0]);
+    for (let i = 0; i < relatedProds[0].length; i++) {
+      scope2[i] = await this.getSingelProduct(relatedProds[0][i].related_mtrl);
+    }
+    // console.log(scope2);
+    return scope2;
+  } catch (err) {
+    err.statusCode = 500;
+    throw err;
+  }
+};
+exports.getScope3 = async (mtrl) => {
+  let scope3 = [];
+  try {
+    let relatedProds = await database.execute(
+      `select * from related_products where mtrl=${mtrl} and scope=3`
+    );
+    for (let i = 0; i < relatedProds[0].length; i++) {
+      scope3[i] = await this.getSingelProduct(relatedProds[0][i].related_mtrl);
+    }
+    return scope3;
+  } catch (err) {
+    err.statusCode = 500;
+    throw err;
+  }
+};
+
+exports.search = async (req, res, next) => {
+  let search = req.body.search;
+  if (!search) {
+    res.status(402).json({ message: "Fill The Required Fields" });
+  } else {
+    if (search == "100") {
+      await this.getProducts(req, res, next);
+    } else {
+      database
+        .execute(
+          `select * from products where p_kod like '%${search}%'  or p_name like '%${search}%'`
+        )
+        .then(async (results) => {
+          let returnprod = [];
+          for (let i = 0; i < results[0].length; i++) {
+            returnprod[i] = await this.getSingelProduct(results[0][i].p_mtrl);
+          }
+          res.status(200).json({
+            message: "Found " + results[0].length + " Products",
+            products: returnprod,
+          });
+        })
+        .catch((err) => {
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
+        });
+    }
   }
 };
