@@ -1355,3 +1355,27 @@ exports.getSeeEarlier = (req, res, next) => {
       });
   }
 };
+exports.offers = (req,res,next) =>{
+  const mtrl = req.body.mtrl;
+  const offer = req.body.offer;
+  const discount = req.body.discount;
+  if(!mtrl || !offer || !discount){
+    res.send(402).json({message:"Fill The Required Fields"})
+  }else{
+    database
+    .execute(
+      `update products set p_offer=${offer} ,p_dicount=${discount} where p_mtrl=${mtrl}`
+    )
+    .then(async results=>{
+        await this.getProducts(req,res,next);
+    })
+    .catch(err=>{
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    })
+  }
+
+
+}

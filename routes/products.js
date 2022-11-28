@@ -18,4 +18,5 @@ router.post('/removeCartItem',productsController.removeCartItem);
 router.post('/addProductBasedOnGrouping',productsController.addProductBasedOnGrouping)
 router.post('/search',productsController.search);
 router.post('/getSeeEarlier',productsController.getSeeEarlier);
+router.post('/offers',productsController.offers);
 module.exports = router;
