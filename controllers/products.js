@@ -1325,7 +1325,7 @@ exports.search = async (req, res, next) => {
     }
   }
 };
-exports.getSeeEarlier = (req, res, nexr) => {
+exports.getSeeEarlier = (req, res, next) => {
   let trdr = req.body.trdr;
   if (!trdr) {
     res.status(402).json({ message: "Fill The Required Fields" });
@@ -1336,10 +1336,10 @@ exports.getSeeEarlier = (req, res, nexr) => {
           select * from see_earlier where c_trdr=${trdr}
     `
       )
-      .then(async (products) => {
+      .then(async products=> {
         let returnProds = [];
         for (let i = 0; i < products[0].length; i++) {
-          returnProds[i] = await this.getSingelProduct(product[0][i].p_mtrl);
+          returnProds[i] = await this.getSingelProduct(products[0][i].p_mtrl);
         }
         res.status(200).json({
           message: returnProds.length + " Products Found",
