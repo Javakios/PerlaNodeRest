@@ -390,7 +390,7 @@ exports.getSingelProduct = async (mtrl) => {
     omada: product[0][0].p_omada,
     name: product[0][0].p_name,
     name1: product[0][0].p_name1,
-    retail: product[0][0].p_retail_price.toFixed(2),
+    retailPrice: product[0][0].p_retail_price.toFixed(2),
     wholesale: product[0][0].p_wholesale_price.toFixed(2),
     offer: product[0][0].p_offer.toFixed(2),
     hasOffer: hasOffer,
@@ -414,6 +414,7 @@ exports.getSingelProduct = async (mtrl) => {
     product_name_eng: product[0][0].onoma_product_eng,
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
+    qty:1
   };
 
   return returnProd;
