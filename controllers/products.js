@@ -1325,3 +1325,32 @@ exports.search = async (req, res, next) => {
     }
   }
 };
+exports.getSeeEarlier = (req, res, nexr) => {
+  let trdr = req.body.trdr;
+  if (!trdr) {
+    res.status(402).json({ message: "Fill The Required Fields" });
+  } else {
+    database
+      .execute(
+        `
+          select * from see_earlier where c_trdr=${trdr}
+    `
+      )
+      .then(async (products) => {
+        let returnProds = [];
+        for (let i = 0; i < products[0].length; i++) {
+          returnProds[i] = await this.getSingelProduct(product[0][i].p_mtrl);
+        }
+        res.status(200).json({
+          message: returnProds.length + " Products Found",
+          products: returnProds
+        });
+      })
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  }
+};
