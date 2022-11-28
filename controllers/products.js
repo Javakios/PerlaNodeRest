@@ -1424,3 +1424,12 @@ exports.homeOffer = (req, res, next) => {
       });
   }
 };
+
+exports.getSugg = (req,res,next)=>{
+  const mtrl = req.body.mtrl
+  if(!mtrl){
+    res.status(402).json({message:"Fill The Required Fields"})
+  }else{
+    
+  }
+}
