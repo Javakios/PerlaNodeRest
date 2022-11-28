@@ -725,6 +725,7 @@ exports.clearOne = async (req, res, next, trdr, group_id) => {
 };
 
 exports.addToCart = async (req, res, next) => {
+  console.log(req.body.stock)
   let bad = false;
   if (
     !req.body.mtrl ||
@@ -737,7 +738,6 @@ exports.addToCart = async (req, res, next) => {
     !req.body.qty ||
     !req.body.retail ||
     !req.body.wholesale ||
-    !req.body.stock ||
     !req.body.group_id ||
     !req.body.p_page ||
     !req.body.dec ||

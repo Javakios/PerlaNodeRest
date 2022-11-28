@@ -8,6 +8,7 @@ const path = require('path');
 const productsRoute = require('./routes/products');
 const categoriesRoute = require('./routes/categories');
 const authRoutes = require('./routes/auth');
+const checkoutRoutes = require('./routes/checkout');
 // initialize server
 
 const app = express();
@@ -30,7 +31,8 @@ app.use('/auth',authRoutes);
 app.use('/products',productsRoute); 
 // categories routes
 app.use('/categories',categoriesRoute);
-
+app.use('/revoloute',checkoutRoutes)
+// errors
 app.use((error,req,res,next)=>{
 
     const status  = error.statusCode || 500;
