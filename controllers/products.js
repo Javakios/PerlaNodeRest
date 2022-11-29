@@ -1,4 +1,3 @@
-const { json } = require("body-parser");
 const database = require("../db");
 
 // Get All Products
@@ -195,8 +194,8 @@ exports.getOffers = async (req, res, next) => {
     video: product[0][0].p_yt_vid,
     data_sheet: product[0][0].p_data_sheet,
     data_sheet_eng: product[0][0].data_sheet_eng,
-    onoma: product[0][0].onoma_product,
-    onoma_eng: product[0][0].onoma_product_eng,
+    product_name: product[0][0].onoma_product,
+    product_name_eng: product[0][0].onoma_product_eng,
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
   };
