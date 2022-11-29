@@ -31,7 +31,8 @@ app.use('/auth',authRoutes);
 app.use('/products',productsRoute); 
 // categories routes
 app.use('/categories',categoriesRoute);
-app.use('/revoloute',checkoutRoutes)
+// revoloute pay
+app.use('/revoloute',checkoutRoutes);
 // errors
 app.use((error,req,res,next)=>{
 

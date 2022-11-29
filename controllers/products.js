@@ -1453,3 +1453,30 @@ exports.getSugg = (req,res,next)=>{
     })
   }
 }
+
+exports.offersByCategory = (req,res,next)=>{
+   const category_id = req.body.category_id;
+   if(!category_id){
+      res.status(402).json({message:"Fill The require Fields"});
+   }else{
+      database.execute(
+        `select * from products where p_category = ${category_id} and p_dicount!=0 and p_offer!=p_wholesale_price`
+      )
+      .then(async offers=>{
+        let returnProds = [];
+        for(let i = 0 ; i < offers[0].length;i++){
+            returnProds[i] = await this.getSingelProduct(offers[0][i].p_mtrl);
+        }
+        res.status(200).json({
+          message:"Offers By Category",
+          products:returnProds
+        })
+      })
+      .catch(err=>{
+        if(!err.statusCode){
+          err.statusCode = 500;
+        }
+        next(err);
+      })
+   }
+}
