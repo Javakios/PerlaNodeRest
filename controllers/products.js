@@ -1510,3 +1510,35 @@ exports.updateDataSheet = (req, res, next) => {
       });
   }
 };
+
+exports.updateDescription = (req,res,next) =>{
+
+    const mtrl = req.body.mtrl;
+    const desc = req.body.desc;
+    const desc_eng = req.body.desc_eng;
+
+    if(!mtrl || !desc || !desc_eng) {
+      res.status(402).json({message:"Fill The Rquired Fields"})
+    }else{
+      database
+      .execute(
+        'update products set  p_desc=? , p_desc_eng=? where p_mtrl=?',[desc,desc_eng,mtrl]
+      )
+      .then(results=>{
+        res.status(200).json({
+          message:"Description Updated",
+          description: desc,
+          desc_eng:desc_eng
+        })
+      })
+      .catch(err=>{
+        if(!err.statusCode){
+          err.statusCode = 500
+        }
+        next(err);
+      })
+
+    }
+
+
+}

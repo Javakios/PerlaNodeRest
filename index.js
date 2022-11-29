@@ -1,24 +1,7 @@
 // initialize my requirements
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
-const multer = require('multer');
-// multer
-const fileStorage = multer.diskStorage({
-    destination:(req,file,cd) =>{
-        
-        cd(null,'upload');
-    },
-    filename:(req,file,cd)=>{
-        
-        cd(null,file.originalname);
-    }
-})
-// const fileFilter = (req,file,cb) =>{
-//     if(file.mimetype )
-// }
-// routes 
+
 
 const productsRoute = require('./routes/products');
 const categoriesRoute = require('./routes/categories');
@@ -29,9 +12,6 @@ const checkoutRoutes = require('./routes/checkout');
 const app = express();
 
 app.use(bodyParser.json())//application/json
-app.use(multer({
-    storage:fileStorage
-}).single('upload'))
 app.use((req,res,next)=>{
 
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -51,9 +31,7 @@ app.use('/products',productsRoute);
 app.use('/categories',categoriesRoute);
 // revoloute pay
 app.use('/revoloute',checkoutRoutes);
-app.post('/deleteImage',(req,res,next)=>{
-    fs.unlinkSync("/upload/"+req.body.image_name)
-})
+
 // errors
 app.use((error,req,res,next)=>{
 

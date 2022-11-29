@@ -23,6 +23,6 @@ router.post('/homepageOffer',productsController.homeOffer);
 router.post('/getAllSuggested',productsController.getSugg);
 router.post('/offersByCategory',productsController.offersByCategory);
 router.post('/updateDataSheet',productsController.updateDataSheet);
-
+router.post('/updateDescription',productsController.updateDescription);
 
 module.exports = router;
