@@ -1,3 +1,4 @@
+const { json } = require("body-parser");
 const database = require("../db");
 
 // Get All Products
@@ -1391,8 +1392,8 @@ exports.homeOffer = (req, res, next) => {
             .execute(
               `insert into product_offer(product_mtrl,p_offer_disc) values (${mtrl},${discount})`
             )
-            .then(async(inserted) => {
-                await this.getProducts(req,res,next);
+            .then(async (inserted) => {
+              await this.getProducts(req, res, next);
             })
             .catch((err) => {
               if (!err.statusCode) {
@@ -1402,18 +1403,18 @@ exports.homeOffer = (req, res, next) => {
             });
         } else {
           database
-          .execute(
-            `update products_offer set product_mtrl=${mtrl},p_offer_disc=${discount}`
-          )
-          .then(async updated=>{
-            await this.getProducts(req,res,next);
-          })
-          .catch(err=>{
-            if(!err.statusCode){
-              err.statusCode = 500;
-            }
-            next(err);
-          })
+            .execute(
+              `update products_offer set product_mtrl=${mtrl},p_offer_disc=${discount}`
+            )
+            .then(async (updated) => {
+              await this.getProducts(req, res, next);
+            })
+            .catch((err) => {
+              if (!err.statusCode) {
+                err.statusCode = 500;
+              }
+              next(err);
+            });
         }
       })
       .catch((err) => {
@@ -1425,58 +1426,88 @@ exports.homeOffer = (req, res, next) => {
   }
 };
 
-exports.getSugg = (req,res,next)=>{
-  const mtrl = req.body.mtrl
-  if(!mtrl){
-    res.status(402).json({message:"Fill The Required Fields"})
-  }else{
+exports.getSugg = (req, res, next) => {
+  const mtrl = req.body.mtrl;
+  if (!mtrl) {
+    res.status(402).json({ message: "Fill The Required Fields" });
+  } else {
     database
-    .execute(
-      `select p_related_mtrl from product_page_related where p_mtrl=${mtrl}`
-    )
-    .then(async relatedProd=>{
-       let prods = [];
-        for(let i = 0 ; i < relatedProd[0].length;i++){
-          console.log(relatedProd[0][i].p_related_mtrl);
-          prods[i] = await this.getSingelProduct(relatedProd[0][i].p_related_mtrl); 
-        }
-        res.status(200).json({
-          message:"Related Products",
-          products: prods
-        })
-    })
-    .catch(err=>{
-      if(!err.statusCode){
-        err.statusCode = 500;
-      }
-      next(err);
-    })
-  }
-}
-
-exports.offersByCategory = (req,res,next)=>{
-   const category_id = req.body.category_id;
-   if(!category_id){
-      res.status(402).json({message:"Fill The require Fields"});
-   }else{
-      database.execute(
-        `select * from products where p_category = ${category_id} and p_dicount!=0 and p_offer!=p_wholesale_price`
+      .execute(
+        `select p_related_mtrl from product_page_related where p_mtrl=${mtrl}`
       )
-      .then(async offers=>{
-        let returnProds = [];
-        for(let i = 0 ; i < offers[0].length;i++){
-            returnProds[i] = await this.getSingelProduct(offers[0][i].p_mtrl);
+      .then(async (relatedProd) => {
+        let prods = [];
+        for (let i = 0; i < relatedProd[0].length; i++) {
+          console.log(relatedProd[0][i].p_related_mtrl);
+          prods[i] = await this.getSingelProduct(
+            relatedProd[0][i].p_related_mtrl
+          );
         }
         res.status(200).json({
-          message:"Offers By Category",
-          products:returnProds
-        })
+          message: "Related Products",
+          products: prods,
+        });
       })
-      .catch(err=>{
-        if(!err.statusCode){
+      .catch((err) => {
+        if (!err.statusCode) {
           err.statusCode = 500;
         }
         next(err);
+      });
+  }
+};
+
+exports.offersByCategory = (req, res, next) => {
+  const category_id = req.body.category_id;
+  if (!category_id) {
+    res.status(402).json({ message: "Fill The require Fields" });
+  } else {
+    database
+      .execute(
+        `select * from products where p_category = ${category_id} and p_dicount!=0 and p_offer!=p_wholesale_price`
+      )
+      .then(async (offers) => {
+        let returnProds = [];
+        for (let i = 0; i < offers[0].length; i++) {
+          returnProds[i] = await this.getSingelProduct(offers[0][i].p_mtrl);
+        }
+        res.status(200).json({
+          message: "Offers By Category",
+          products: returnProds,
+        });
       })
-   }
-}
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  }
+};
+exports.updateDataSheet = (req, res, next) => {
+  const data_el = req.body.data_el;
+  const data_en = req.body.data_en;
+  const mtrl = req.body.mtrl;
+  if (!data_el || !data_en || !mtrl) {
+    res.status(402).json({ message: "Fill The required Fields" });
+  } else {
+    
+   database
+      .execute(
+        'update products set p_data_sheet=? , data_sheet_eng=? where p_mtrl=?',[data_el,data_en,mtrl]
+      )
+      .then((update) => {
+        res.status(200).json({
+          message: "Datasheet  Updated",
+          data_sheet: data_el,
+          data_sheet_eng: data_en,
+        });
+      })
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  }
+};
