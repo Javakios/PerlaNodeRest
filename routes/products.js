@@ -22,5 +22,5 @@ router.post('/offers',productsController.offers);
 router.post('/homepageOffer',productsController.homeOffer);
 router.post('/getAllSuggested',productsController.getSugg);
 router.post('/offersByCategory',productsController.offersByCategory);
-router.post('/getAllOffers',productsController.getHomePageOffer);
+
 module.exports = router;
