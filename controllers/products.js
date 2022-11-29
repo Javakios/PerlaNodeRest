@@ -1480,3 +1480,24 @@ exports.offersByCategory = (req,res,next)=>{
       })
    }
 }
+exports.getHomePageOffer = (req,res,next)=>{
+
+    database
+    .execute(
+      `select * from products_offer`
+    )
+    .then(async product=>{
+      console.log(product[0][0]);
+      let homeOffer = await this.getSingelProduct(product[0][0].product_mtrl);
+      res.status(200).json({
+        message:"Home Offer",
+        offers:homeOffer
+      }) 
+
+    })
+    .catch(err=>{
+      if(!err.statusCode) err.statusCode =500;
+      next(err);
+    })
+
+}
