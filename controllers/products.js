@@ -1430,6 +1430,26 @@ exports.getSugg = (req,res,next)=>{
   if(!mtrl){
     res.status(402).json({message:"Fill The Required Fields"})
   }else{
-    
+    database
+    .execute(
+      `select p_related_mtrl from product_page_related where p_mtrl=${mtrl}`
+    )
+    .then(async relatedProd=>{
+       let prods = [];
+        for(let i = 0 ; i < relatedProd[0].length;i++){
+          console.log(relatedProd[0][i].p_related_mtrl);
+          prods[i] = await this.getSingelProduct(relatedProd[0][i].p_related_mtrl); 
+        }
+        res.status(200).json({
+          message:"Related Products",
+          products: prods
+        })
+    })
+    .catch(err=>{
+      if(!err.statusCode){
+        err.statusCode = 500;
+      }
+      next(err);
+    })
   }
 }

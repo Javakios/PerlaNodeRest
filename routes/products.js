@@ -20,4 +20,5 @@ router.post('/search',productsController.search);
 router.post('/getSeeEarlier',productsController.getSeeEarlier);
 router.post('/offers',productsController.offers);
 router.post('/homepageOffer',productsController.homeOffer);
+router.post('/getAllSuggested',productsController.getSugg);
 module.exports = router;
