@@ -1550,7 +1550,7 @@ exports.updateSingleImage = (req, res, next) => {
   }else{
     database
     .execute(
-      'update products set p_image=? where p_mtrl=?',[mtrl,image]
+      'update products set p_image=? where p_mtrl=?',[image,mtrl]
     )
     .then(results=>{
         res.status(200).json({message:"Photo Profile Updated"})
