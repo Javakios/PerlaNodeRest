@@ -1490,10 +1490,10 @@ exports.updateDataSheet = (req, res, next) => {
   if (!data_el || !data_en || !mtrl) {
     res.status(402).json({ message: "Fill The required Fields" });
   } else {
-    
-   database
+    database
       .execute(
-        'update products set p_data_sheet=? , data_sheet_eng=? where p_mtrl=?',[data_el,data_en,mtrl]
+        "update products set p_data_sheet=? , data_sheet_eng=? where p_mtrl=?",
+        [data_el, data_en, mtrl]
       )
       .then((update) => {
         res.status(200).json({
@@ -1511,34 +1511,54 @@ exports.updateDataSheet = (req, res, next) => {
   }
 };
 
-exports.updateDescription = (req,res,next) =>{
+exports.updateDescription = (req, res, next) => {
+  const mtrl = req.body.mtrl;
+  const desc = req.body.desc;
+  const desc_eng = req.body.desc_eng;
 
-    const mtrl = req.body.mtrl;
-    const desc = req.body.desc;
-    const desc_eng = req.body.desc_eng;
-
-    if(!mtrl || !desc || !desc_eng) {
-      res.status(402).json({message:"Fill The Rquired Fields"})
-    }else{
-      database
-      .execute(
-        'update products set  p_desc=? , p_desc_eng=? where p_mtrl=?',[desc,desc_eng,mtrl]
-      )
-      .then(results=>{
+  if (!mtrl || !desc || !desc_eng) {
+    res.status(402).json({ message: "Fill The Rquired Fields" });
+  } else {
+    database
+      .execute("update products set  p_desc=? , p_desc_eng=? where p_mtrl=?", [
+        desc,
+        desc_eng,
+        mtrl,
+      ])
+      .then((results) => {
         res.status(200).json({
-          message:"Description Updated",
+          message: "Description Updated",
           description: desc,
-          desc_eng:desc_eng
-        })
+          desc_eng: desc_eng,
+        });
       })
-      .catch(err=>{
-        if(!err.statusCode){
-          err.statusCode = 500
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
         }
         next(err);
-      })
+      });
+  }
+};
 
-    }
+exports.updateSingleImage = (req, res, next) => {
+  const mtrl = req.body.mtrl;
+  const image = req.body.image;
 
-
-}
+  if(!mtrl || !image){
+    res.status(402).json({message:"fill the require fields"})
+  }else{
+    database
+    .execute(
+      'update products set p_image=? where p_mtrl=?',[mtrl,image]
+    )
+    .then(results=>{
+        res.status(200).json({message:"Photo Profile Updated"})
+    })
+    .catch(err=>{
+      if(!err.statusCode){
+        err.statusCode = 500;
+      }
+    })
+  }
+};
