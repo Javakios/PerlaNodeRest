@@ -1689,3 +1689,23 @@ exports.uploadVideo = (req, res, next) => {
     }
   }
 };
+exports.uploadPdfToProduct = (req,res,next) =>{
+  const mtrl = req.body.mtrl;
+  const pdfName = req.body.pdfName;
+  if(!mtrl || !pdfName){
+    res.status(402).json({message:"fill the required fields"})
+  }else{
+    database.execute(
+      'update products set p_pdf=? where p_mtrl=?',[pdfName,mtrl]
+    )
+    .then(results =>{
+      res.status(200).json({message:"Pdf Inserted To Product"})
+    })
+    .catch(err=>{
+      if(!err.statusCode){
+        err.statusCode =500;
+      }
+      next(err);
+    })
+  }
+}
