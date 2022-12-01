@@ -623,7 +623,7 @@ exports.findMosquiProduct = async (req, res, next) => {
       `SELECT * FROM products WHERE p_subcategory=${subcategory} AND color_fabric_id=${fabric} AND color_profile_id=${profile}  and (min_width < ${width} and max_width > ${width}) and (min_height < ${height} and max_height>${height})`
     );
     if (findProd[0].length == 0) {
-      res.status(402).json({ message: "No Product Found" });
+      res.status(200).json({ message: "No Product Found" });
     } else {
       // console.log(findProd[0]);
       res.status(200).json({
@@ -1561,81 +1561,79 @@ exports.updateSingleImage = (req, res, next) => {
   }
 };
 
-exports.getColors = async(req, res, next) => {
-    const fabric_color   = await this.getFabric();
-     const polydrox_color =await this.getPolydrox();
-     const profile_color  = await this.getProfile();
-     const ral_color      =await this.getRal();
-     const wooden_color   =await this.getWooden();
+exports.getColors = async (req, res, next) => {
+  const fabric_color = await this.getFabric();
+  const polydrox_color = await this.getPolydrox();
+  const profile_color = await this.getProfile();
+  const ral_color = await this.getRal();
+  const wooden_color = await this.getWooden();
 
-    res.status(200).json({
-      message:'All Colors Fetched Successfully',
-      fabric : fabric_color,
-      polydrox:polydrox_color,
-      profile:profile_color,
-      ral:ral_color,
-      wooden:wooden_color
-    })
+  res.status(200).json({
+    message: "All Colors Fetched Successfully",
+    fabric: fabric_color,
+    polydrox: polydrox_color,
+    profile: profile_color,
+    ral: ral_color,
+    wooden: wooden_color,
+  });
 };
 
-exports.getWooden = async() =>{
+exports.getWooden = async () => {
   let returnWooden = [];
-  let wooden = await database.execute('select * from wooden_colors');
-  for(let i = 0; i < wooden[0].length;i++){
+  let wooden = await database.execute("select * from wooden_colors");
+  for (let i = 0; i < wooden[0].length; i++) {
     returnWooden[i] = {
       id: wooden[0][i].wooden_id,
-      name:wooden[0][i].wooden_name
-    }
+      name: wooden[0][i].wooden_name,
+    };
   }
   return returnWooden;
-}
+};
 
-exports.getRal = async ()=>{
+exports.getRal = async () => {
   let returnRal = [];
-  let ral = await database.execute('select * from ral_color');
-  for(let i = 0 ; i < ral[0].length;i++){
+  let ral = await database.execute("select * from ral_color");
+  for (let i = 0; i < ral[0].length; i++) {
     returnRal[i] = {
-      id : ral[0][i].ral_id,
-      name:ral[0][i].ral_name
-    }
+      id: ral[0][i].ral_id,
+      name: ral[0][i].ral_name,
+    };
   }
   return returnRal;
-}
+};
 
-exports.getProfile = async() =>{
+exports.getProfile = async () => {
   let returnProfile = [];
-  let profile = await database.execute('select * from profile_color');
-  for(let i = 0 ; i < profile[0].length;i++){
+  let profile = await database.execute("select * from profile_color");
+  for (let i = 0; i < profile[0].length; i++) {
     returnProfile[i] = {
-      id:profile[0][i].profile_id,
-      name:profile[0][i].profile_name
-    }
+      id: profile[0][i].profile_id,
+      name: profile[0][i].profile_name,
+    };
   }
   return returnProfile;
-}
+};
 
-exports.getPolydrox = async() =>{
-    let returnPolydrox=[];
-    let polydrox = await database.execute('select * from polydrox_color');
-    for(let i =0 ; i < polydrox[0].length;i++){
-      returnPolydrox[i] = {
-        id: polydrox[0][i].polydrox_id,
-        name:polydrox[0][i].polydrox_name
-      }
-    }
-    return returnPolydrox;
-}
-
-exports.getFabric =async () =>{
-  let returnFabric =[];
-  let fabric = await database.execute('select * from fabric_color')
-  for(let i = 0 ; i<fabric[0].length;i++){
-
-    returnFabric[i] = {
-      id:fabric[0][i].color_id,
-      name:fabric[0][i].color_name
-    }
+exports.getPolydrox = async () => {
+  let returnPolydrox = [];
+  let polydrox = await database.execute("select * from polydrox_color");
+  for (let i = 0; i < polydrox[0].length; i++) {
+    returnPolydrox[i] = {
+      id: polydrox[0][i].polydrox_id,
+      name: polydrox[0][i].polydrox_name,
+    };
   }
-  return returnFabric
+  return returnPolydrox;
+};
 
-}
+exports.getFabric = async () => {
+  let returnFabric = [];
+  let fabric = await database.execute("select * from fabric_color");
+  for (let i = 0; i < fabric[0].length; i++) {
+    returnFabric[i] = {
+      id: fabric[0][i].color_id,
+      name: fabric[0][i].color_name,
+    };
+  }
+  return returnFabric;
+};
