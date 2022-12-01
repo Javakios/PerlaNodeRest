@@ -30,4 +30,5 @@ router.post('/uploadVideo',productsController.uploadVideo);
 router.post('/uploadPdfToProduct',productsController.uploadPdfToProduct);
 router.post('/removeSinglePdf',productsController.removeSinglePdf)
 router.post('/secondaryImages',productsController.secondaryImages);
+router.post('/removeThumbnail',productsController.removeThumb)
 module.exports = router;

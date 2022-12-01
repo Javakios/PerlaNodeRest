@@ -1789,3 +1789,21 @@ exports.fromStringToArray = (string) => {
   let arr = string.split(",");
   return arr;
 };
+exports.removeThumb = (req,res,next) =>{
+  const mtrl = req.body.mtrl;
+  if(!mtrl){
+    res.status(402).json({message:"fill the required fields"});
+  }else{
+    database
+    .execute('update products set p_image=? where p_mtrl=?',['https://perlarest.vinoitalia.gr/php-auth-api/images.png',mtrl])
+    .then(async results =>{
+      await this.getProducts(req,res,next);
+    })
+    .catch(err=>{
+      if(!err.statusCode){
+        err.statusCode = 500;
+      }
+      next(err);
+    })
+  }
+}
