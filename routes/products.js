@@ -26,4 +26,5 @@ router.post('/updateDataSheet',productsController.updateDataSheet);
 router.post('/updateDescription',productsController.updateDescription);
 router.post('/updateSingleImage',productsController.updateSingleImage);
 router.post('/getColors',productsController.getColors);
+router.post('/uploadVideo',productsController.uploadVideo);
 module.exports = router;
