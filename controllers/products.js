@@ -1736,7 +1736,7 @@ exports.secondaryImages = async(req, res, next) => {
     const imageArray = this.fromStringToArray(img);
     switch (mode) {
       case "insert":
-        await this.insertImages(imageArray, mtrl);
+        await this.insertImages(req,res,next,imageArray, mtrl);
         break;
       case "getimage":
        await this.getProducts(req,res,next);
@@ -1760,14 +1760,14 @@ exports.remove = (req,res,next,mtrl,images) =>{
   })
 }
 exports.imageExists = async (mtrl,image) =>{
-  let find = await database.execute('select * from products_images where p_mtrl=? and p_image=?',[mtrl,image])
+  let find = await database.execute('select * from product_images where p_mtrl=? and p_image=?',[mtrl,image])
   if(find[0].length > 0){
     return true;
   }else{
     return false;
   }
 }
-exports.insertImages = async (images, mtrl) => {
+exports.insertImages = async (req,res,next,images, mtrl) => {
   let oneExists = false;
   for (let i = 0; i < images.length; i++) {
     if (!await this.imageExists(mtrl, images[i])) {
