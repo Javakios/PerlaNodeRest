@@ -25,4 +25,5 @@ router.post('/offersByCategory',productsController.offersByCategory);
 router.post('/updateDataSheet',productsController.updateDataSheet);
 router.post('/updateDescription',productsController.updateDescription);
 router.post('/updateSingleImage',productsController.updateSingleImage);
+router.post('/getColors',productsController.getColors);
 module.exports = router;

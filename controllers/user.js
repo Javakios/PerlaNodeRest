@@ -40,3 +40,4 @@ exports.getYpokat = (req,res,next) =>{
     }
 
 }
+
