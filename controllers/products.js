@@ -1807,3 +1807,13 @@ exports.removeThumb = (req,res,next) =>{
     })
   }
 }
+exports.getSingle = async (req,res,next)=>{
+  const mtrl = req.body.mtrl;
+  if(!mtrl)res.status(402).json({message:"fill the required fields"});
+  else{
+    res.status(200).json({
+      message:"Single Product",
+      product : await this.getSingelProduct(mtrl)
+    });
+  }
+}
