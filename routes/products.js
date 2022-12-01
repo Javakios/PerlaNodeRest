@@ -28,4 +28,5 @@ router.post('/updateSingleImage',productsController.updateSingleImage);
 router.post('/getColors',productsController.getColors);
 router.post('/uploadVideo',productsController.uploadVideo);
 router.post('/uploadPdfToProduct',productsController.uploadPdfToProduct);
+router.post('/removeSinglePdf',productsController.removeSinglePdf)
 module.exports = router;

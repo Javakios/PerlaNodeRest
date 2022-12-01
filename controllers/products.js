@@ -1709,3 +1709,23 @@ exports.uploadPdfToProduct = (req,res,next) =>{
     })
   }
 }
+exports.removeSinglePdf = (req,res,next) =>{
+  const mtrl = req.body.mtrl;
+  if(!mtrl){
+    res.status(402).json({message:"fill the required fields"})
+  }else{
+    database.execute(
+      'update products set p_pdf=? where p_mtrl=?',['empty',mtrl]
+    )
+    .then(async results=>{
+      await this.getProducts(req,res,next)
+    })
+    .catch(err=>{
+      if(!err.statusCode){
+        err.statusCode = 500;
+      }
+      next(err);
+    })
+  }
+
+}
