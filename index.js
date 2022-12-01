@@ -7,6 +7,7 @@ const productsRoute = require('./routes/products');
 const categoriesRoute = require('./routes/categories');
 const authRoutes = require('./routes/auth');
 const checkoutRoutes = require('./routes/checkout');
+const userRoutes = require('./routes/user');
 // initialize server
 
 const app = express();
@@ -31,7 +32,8 @@ app.use('/products',productsRoute);
 app.use('/categories',categoriesRoute);
 // revoloute pay
 app.use('/revoloute',checkoutRoutes);
-
+//user routers
+app.use('/user',userRoutes)
 // errors
 app.use((error,req,res,next)=>{
 
