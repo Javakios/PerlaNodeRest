@@ -1647,7 +1647,7 @@ exports.uploadVideo = (req, res, next) => {
     res.status(402).json({ message: "fill the required fields" });
   } else {
     //console.log(url.host);
-    if (req.body.method || host[2] !='www.youtube.com') {
+    if (req.body.method || host[2] != "www.youtube.com") {
       database
         .execute("update products set p_yt_vid=? where p_mtrl=?", [
           "empty",
@@ -1689,43 +1689,103 @@ exports.uploadVideo = (req, res, next) => {
     }
   }
 };
-exports.uploadPdfToProduct = (req,res,next) =>{
+exports.uploadPdfToProduct = (req, res, next) => {
   const mtrl = req.body.mtrl;
   const pdfName = req.body.pdfName;
-  if(!mtrl || !pdfName){
-    res.status(402).json({message:"fill the required fields"})
-  }else{
-    database.execute(
-      'update products set p_pdf=? where p_mtrl=?',[pdfName,mtrl]
-    )
-    .then(results =>{
-      res.status(200).json({message:"Pdf Inserted To Product"})
-    })
-    .catch(err=>{
-      if(!err.statusCode){
-        err.statusCode =500;
-      }
-      next(err);
-    })
+  if (!mtrl || !pdfName) {
+    res.status(402).json({ message: "fill the required fields" });
+  } else {
+    database
+      .execute("update products set p_pdf=? where p_mtrl=?", [pdfName, mtrl])
+      .then((results) => {
+        res.status(200).json({ message: "Pdf Inserted To Product" });
+      })
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
   }
-}
-exports.removeSinglePdf = (req,res,next) =>{
+};
+exports.removeSinglePdf = (req, res, next) => {
   const mtrl = req.body.mtrl;
-  if(!mtrl){
-    res.status(402).json({message:"fill the required fields"})
-  }else{
-    database.execute(
-      'update products set p_pdf=? where p_mtrl=?',['empty',mtrl]
-    )
-    .then(async results=>{
-      await this.getProducts(req,res,next)
-    })
-    .catch(err=>{
-      if(!err.statusCode){
-        err.statusCode = 500;
-      }
-      next(err);
-    })
+  if (!mtrl) {
+    res.status(402).json({ message: "fill the required fields" });
+  } else {
+    database
+      .execute("update products set p_pdf=? where p_mtrl=?", ["empty", mtrl])
+      .then(async (results) => {
+        await this.getProducts(req, res, next);
+      })
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
   }
-
+};
+exports.secondaryImages = async(req, res, next) => {
+  const mtrl = req.body.mtrl;
+  const img = req.body.img;
+  const mode = req.body.mode;
+  if (!mtrl || !img || !mode)
+    res.status(402).json({ message: "fill the require fields" });
+  else {
+    const imageArray = this.fromStringToArray(img);
+    switch (mode) {
+      case "insert":
+        await this.insertImages(imageArray, mtrl);
+        break;
+      case "getimage":
+       await this.getProducts(req,res,next);
+        break;
+      case "remove":
+        this.remove(req,res,next,mtrl,imageArray);
+        break;
+    }
+  }
+};
+exports.remove = (req,res,next,mtrl,images) =>{
+  database.execute('delete from product_images where p_mtrl=? and p_image=?',[mtrl,images[0]])
+  .then(async results=>{
+    await this.getProducts(req,res,next);
+  })
+  .catch(err=>{
+    if(!err.statusCode){
+      err.statusCode=500;
+    }
+    next(err);
+  })
 }
+exports.imageExists = async (mtrl,image) =>{
+  let find = await database.execute('select * from products_images where p_mtrl=? and p_image=?',[mtrl,image])
+  if(find[0].length > 0){
+    return true;
+  }else{
+    return false;
+  }
+}
+exports.insertImages = async (images, mtrl) => {
+  let oneExists = false;
+  for (let i = 0; i < images.length; i++) {
+    if (!await this.imageExists(mtrl, images[i])) {
+      try {
+        let insert = await database.execute(
+          "insert into product_images (p_mtrl,p_image) values (?,?)",
+          [mtrl, images[i]]
+        );
+          await this.getProducts(req,res,next);
+      } catch (err) {
+        throw new Error(err);
+      }
+    }else{
+      oneExists = true;
+    }
+  }
+};
+exports.fromStringToArray = (string) => {
+  let arr = string.split(",");
+  return arr;
+};
