@@ -52,6 +52,7 @@ exports.login = (req, res, next) => {
                 dromologio: results[0][0].c_dromologio,
                 tropos_apostolis: results[0][0].c_tropos_apostolis,
                 metaforeas: results[0][0].c_metaforeas,
+                area_id : results[0][0].c_geografiki_zoni_id
               });
               console.log(token);
               // CORRECT PASSWORD SO GIVE TOKEN
