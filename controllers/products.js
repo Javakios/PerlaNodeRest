@@ -1640,12 +1640,14 @@ exports.getFabric = async () => {
 
 exports.uploadVideo = (req, res, next) => {
   const mtrl = req.body.mtrl;
-  const url = new URL(req.body.url);
+  const url = req.body.url;
+  let host = url.split("/");
+
   if (!mtrl || !url) {
     res.status(402).json({ message: "fill the required fields" });
   } else {
-    console.log(url.host);
-    if (url.host != "www.youtube.com" || req.body.method) {
+    //console.log(url.host);
+    if (req.body.method || host[2] !='www.youtube.com') {
       database
         .execute("update products set p_yt_vid=? where p_mtrl=?", [
           "empty",
@@ -1653,7 +1655,7 @@ exports.uploadVideo = (req, res, next) => {
         ])
         .then((results) => {
           res.status(200).json({
-            message: "Invalid Url",
+            message: "Video Deleted",
           });
         })
         .catch((err) => {
@@ -1663,23 +1665,27 @@ exports.uploadVideo = (req, res, next) => {
           next(err);
         });
     } else {
-        let validUrl = req.body.url.replace('watch?','embed/');
-        validUrl = validUrl.replace('v=','');
-        validUrl = validUrl.split('&');
-        validUrl = validUrl[0];
-        database.execute('update products set p_yt_vid=? where p_mtrl=?',[validUrl,mtrl])
-        .then(results =>{
+      let validUrl = req.body.url.replace("watch?", "embed/");
+      validUrl = validUrl.replace("v=", "");
+      validUrl = validUrl.split("&");
+      validUrl = validUrl[0];
+      database
+        .execute("update products set p_yt_vid=? where p_mtrl=?", [
+          validUrl,
+          mtrl,
+        ])
+        .then((results) => {
           res.status(200).json({
-            message :"Video uploaded Successfully",
-            video:validUrl
-          })
+            message: "Video uploaded Successfully",
+            video: validUrl,
+          });
         })
-        .catch(err=>{
-          if(!err.statusCode){
+        .catch((err) => {
+          if (!err.statusCode) {
             err.statusCode = 500;
           }
           next(err);
-        })
+        });
     }
   }
 };
