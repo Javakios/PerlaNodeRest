@@ -1742,7 +1742,7 @@ exports.secondaryImages = async(req, res, next) => {
        await this.getProducts(req,res,next);
         break;
       case "remove":
-        this.remove(req,res,next,mtrl,imageArray);
+       await this.remove(req,res,next,mtrl,imageArray);
         break;
     }
   }
