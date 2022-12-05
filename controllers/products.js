@@ -55,6 +55,8 @@ exports.getProducts = (req, res, next) => {
           onoma_eng: products[0][i].onoma_product_eng,
           kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
           texnikos_kodikos: products[0][i].p_code_texniko,
+          sintomi_per : products[0][i].sintomi_per,
+          sintomi_per_eng :products[0][i].sintomi_per_eng
         };
       }
       // // // database.end();
@@ -134,6 +136,8 @@ exports.getProductsRelated = async (req, res, next) => {
         onoma_eng: prod[0][0].onoma_product_eng,
         kodikos_kataskeuasti: prod[0][0].p_code_kataskeuasti,
         texnikos_kodikos: prod[0][0].p_code_texniko,
+        sintomi_per : prod[0][0].sintomi_per,
+        sintomi_per_eng : prod[0][0].sintomi_per_eng
       };
     }
   }
@@ -198,6 +202,8 @@ exports.getOffers = async (req, res, next) => {
     product_name_eng: product[0][0].onoma_product_eng,
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
+    sintomi_per : product[0][0].sintomi_per,
+    sintomi_per_eng:product[0][0].sintomi_per_eng
   };
   res.status(200).json({
     message: "Offers",
@@ -266,6 +272,8 @@ exports.deleteOffer = async (req, res, next) => {
         product_name_eng: products[0][i].onoma_product_eng,
         kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
         texnikos_kodikos: products[0][i].p_code_texniko,
+        sintomi_per : products[0][i].sintomi_per,
+        sintomi_per_eng:products[0][i].sintomi_per_eng
       };
     }
     // // database.end();
@@ -415,6 +423,8 @@ exports.getSingelProduct = async (mtrl) => {
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
     qty: 1,
+    sintomi_per : product[0][0].sintomi_per,
+    sintomi_per_eng:product[0][0].sintomi_per_eng
   };
 
   return returnProd;
@@ -545,6 +555,8 @@ exports.getSingelCartitem = async (
     onoma_eng: product[0][0].onoma_product_eng,
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
+    sintomi_per : product[0][0].sintomi_per,
+    sintomi_per : product[0][0].sintomi_per_eng
   };
 
   // console.log(returnProd);
