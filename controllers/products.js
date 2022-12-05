@@ -3,7 +3,7 @@ const database = require("../db");
 // Get All Products
 exports.getProducts = (req, res, next) => {
   database
-    .execute("SELECT * FROM products")
+    .execute("SELECT * FROM products order by onoma_product ASC")
     .then(async (products) => {
       hasOffer = false;
       let returnProds = [];

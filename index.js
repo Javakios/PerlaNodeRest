@@ -8,6 +8,7 @@ const categoriesRoute = require('./routes/categories');
 const authRoutes = require('./routes/auth');
 const checkoutRoutes = require('./routes/checkout');
 const userRoutes = require('./routes/user');
+const carouselRoutes = require('./routes/carousel');
 // initialize server
 
 const app = express();
@@ -33,7 +34,9 @@ app.use('/categories',categoriesRoute);
 // revoloute pay
 app.use('/revoloute',checkoutRoutes);
 //user routers
-app.use('/user',userRoutes)
+app.use('/user',userRoutes);
+// carousel tool
+app.use('/carousel',carouselRoutes);
 // errors
 app.use((error,req,res,next)=>{
 
