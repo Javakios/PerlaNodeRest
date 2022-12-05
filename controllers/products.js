@@ -513,13 +513,14 @@ exports.getSingelCartitem = async (
   );
   if (homePageOffer[0].length != 0) homeOffer = true;
   else homeOffer = false;
+  wholesale = +wholesale;
   returnProd = {
     mtrl: product[0][0].p_mtrl,
     omada: product[0][0].p_omada,
     name: product[0][0].p_name,
     name1: product[0][0].p_name1,
     retail: product[0][0].p_retail_price.toFixed(2),
-    wholesale: wholesale.toFixed(2),
+    wholesale:  wholesale.toFixed(2),
     offer: product[0][0].p_offer.toFixed(2),
     hasOffer: hasOffer,
     homePageOffer: homeOffer,
