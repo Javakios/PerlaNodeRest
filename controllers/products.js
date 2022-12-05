@@ -519,7 +519,7 @@ exports.getSingelCartitem = async (
     name: product[0][0].p_name,
     name1: product[0][0].p_name1,
     retail: product[0][0].p_retail_price.toFixed(2),
-    wholesale: wholesale,
+    wholesale: wholesale.toFixed(2),
     offer: product[0][0].p_offer.toFixed(2),
     hasOffer: hasOffer,
     homePageOffer: homeOffer,
@@ -1726,7 +1726,7 @@ exports.removeSinglePdf = (req, res, next) => {
       });
   }
 };
-exports.secondaryImages = async(req, res, next) => {
+exports.secondaryImages = async (req, res, next) => {
   const mtrl = req.body.mtrl;
   const img = req.body.img;
   const mode = req.body.mode;
@@ -1736,51 +1736,58 @@ exports.secondaryImages = async(req, res, next) => {
     const imageArray = this.fromStringToArray(img);
     switch (mode) {
       case "insert":
-        await this.insertImages(req,res,next,imageArray, mtrl);
+        await this.insertImages(req, res, next, imageArray, mtrl);
         break;
       case "getimage":
-       await this.getProducts(req,res,next);
+        await this.getProducts(req, res, next);
         break;
       case "remove":
-       await this.remove(req,res,next,mtrl,imageArray);
+        await this.remove(req, res, next, mtrl, imageArray);
         break;
     }
   }
 };
-exports.remove = (req,res,next,mtrl,images) =>{
-  database.execute('delete from product_images where p_mtrl=? and p_image=?',[mtrl,images[0]])
-  .then(async results=>{
-    await this.getProducts(req,res,next);
-  })
-  .catch(err=>{
-    if(!err.statusCode){
-      err.statusCode=500;
-    }
-    next(err);
-  })
-}
-exports.imageExists = async (mtrl,image) =>{
-  let find = await database.execute('select * from product_images where p_mtrl=? and p_image=?',[mtrl,image])
-  if(find[0].length > 0){
+exports.remove = (req, res, next, mtrl, images) => {
+  database
+    .execute("delete from product_images where p_mtrl=? and p_image=?", [
+      mtrl,
+      images[0],
+    ])
+    .then(async (results) => {
+      await this.getProducts(req, res, next);
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+exports.imageExists = async (mtrl, image) => {
+  let find = await database.execute(
+    "select * from product_images where p_mtrl=? and p_image=?",
+    [mtrl, image]
+  );
+  if (find[0].length > 0) {
     return true;
-  }else{
+  } else {
     return false;
   }
-}
-exports.insertImages = async (req,res,next,images, mtrl) => {
+};
+exports.insertImages = async (req, res, next, images, mtrl) => {
   let oneExists = false;
   for (let i = 0; i < images.length; i++) {
-    if (!await this.imageExists(mtrl, images[i])) {
+    if (!(await this.imageExists(mtrl, images[i]))) {
       try {
         let insert = await database.execute(
           "insert into product_images (p_mtrl,p_image) values (?,?)",
           [mtrl, images[i]]
         );
-          await this.getProducts(req,res,next);
+        await this.getProducts(req, res, next);
       } catch (err) {
         throw new Error(err);
       }
-    }else{
+    } else {
       oneExists = true;
     }
   }
@@ -1789,31 +1796,34 @@ exports.fromStringToArray = (string) => {
   let arr = string.split(",");
   return arr;
 };
-exports.removeThumb = (req,res,next) =>{
+exports.removeThumb = (req, res, next) => {
   const mtrl = req.body.mtrl;
-  if(!mtrl){
-    res.status(402).json({message:"fill the required fields"});
-  }else{
+  if (!mtrl) {
+    res.status(402).json({ message: "fill the required fields" });
+  } else {
     database
-    .execute('update products set p_image=? where p_mtrl=?',['https://perlarest.vinoitalia.gr/php-auth-api/images.png',mtrl])
-    .then(async results =>{
-      await this.getProducts(req,res,next);
-    })
-    .catch(err=>{
-      if(!err.statusCode){
-        err.statusCode = 500;
-      }
-      next(err);
-    })
+      .execute("update products set p_image=? where p_mtrl=?", [
+        "https://perlarest.vinoitalia.gr/php-auth-api/images.png",
+        mtrl,
+      ])
+      .then(async (results) => {
+        await this.getProducts(req, res, next);
+      })
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
   }
-}
-exports.getSingle = async (req,res,next)=>{
+};
+exports.getSingle = async (req, res, next) => {
   const mtrl = req.body.mtrl;
-  if(!mtrl)res.status(402).json({message:"fill the required fields"});
-  else{
+  if (!mtrl) res.status(402).json({ message: "fill the required fields" });
+  else {
     res.status(200).json({
-      message:"Single Product",
-      product : await this.getSingelProduct(mtrl)
+      message: "Single Product",
+      product: await this.getSingelProduct(mtrl),
     });
   }
-}
+};
