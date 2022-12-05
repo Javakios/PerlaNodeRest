@@ -17,7 +17,7 @@ exports.getCategories = async (req, res, next) => {
     } else {
       for (let i = 0; i < main_cat[0].length; i++) {
         let sub_cat =await database.execute(
-            "SELECT * FROM subcategories WHERE cat_id = ?",
+            "SELECT * FROM subcategories WHERE cat_id = ? order by sub_name ASC",
             [main_cat[0][i].cat_id]
         );
         for (let j = 0; j < sub_cat[0].length; j++) {
