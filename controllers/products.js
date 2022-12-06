@@ -565,7 +565,7 @@ exports.getSingelCartitem = async (
 // get seen recently products
 exports.seeEarlier = async (req, res, next) => {
   let bad = false;
-  if (!req.query.trdr || !req.body.mtrl) {
+  if (!req.query.trdr || !req.query.mtrl) {
     bad = true;
   } else {
     let mtrl = req.query.mtrl;
@@ -584,7 +584,7 @@ exports.seeEarlier = async (req, res, next) => {
       new Date().getSeconds();
 
     let findProd = await database.execute(
-      `SELECT * FROM see_earlier WHERE c_trdr=${trdr} and p_mtrl=${mtrl}`
+      `SELECT * FROM see_earlier WHERE c_trdr=${trdr}`
     );
     if (findProd[0].length >= 6) {
       let min = await database.execute(
