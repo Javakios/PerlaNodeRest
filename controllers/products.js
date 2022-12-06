@@ -584,7 +584,7 @@ exports.seeEarlier = async (req, res, next) => {
       new Date().getSeconds();
 
     let findProd = await database.execute(
-      `SELECT * FROM see_earlier WHERE c_trdr=${trdr}`
+      `SELECT * FROM see_earlier WHERE c_trdr=${trdr} and p_mtrl=${mtrl}`
     );
     if (findProd[0].length >= 6) {
       let min = await database.execute(
