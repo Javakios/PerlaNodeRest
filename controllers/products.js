@@ -2,8 +2,13 @@ const database = require("../db");
 
 // Get All Products
 exports.getProducts = (req, res, next) => {
+  const sub_cat_id = req.body.query;
+  if(!sub_cat_id) res.status(402).json({message:"fill the required fields"});
+  else{
+
+
   database
-    .execute("SELECT * FROM products order by onoma_product ASC")
+    .execute("SELECT * FROM products where p_subcategory=? order by onoma_product ASC",[sub_cat_id])
     .then(async (products) => {
       hasOffer = false;
       let returnProds = [];
@@ -69,6 +74,7 @@ exports.getProducts = (req, res, next) => {
       if (!err.statusCode) err.statusCode = 500;
       next(err);
     });
+  }
 };
 
 // Get All Products Related
