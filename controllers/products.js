@@ -58,7 +58,8 @@ exports.getProducts = (req, res, next) => {
           kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
           texnikos_kodikos: products[0][i].p_code_texniko,
           sintomi_per : products[0][i].sintomi_per,
-          sintomi_per_eng :products[0][i].sintomi_per_eng
+          sintomi_per_eng :products[0][i].sintomi_per_eng,
+          addedToFav : products[0][i].isFav
         };
       }
       // // // database.end();
@@ -126,7 +127,8 @@ exports.getProducts = (req, res, next) => {
           kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
           texnikos_kodikos: products[0][i].p_code_texniko,
           sintomi_per : products[0][i].sintomi_per,
-          sintomi_per_eng :products[0][i].sintomi_per_eng
+          sintomi_per_eng :products[0][i].sintomi_per_eng,
+          addedToFav : products[0][i].isFav
         };
       }
       // // // database.end();
@@ -209,7 +211,9 @@ exports.getProductsRelated = async (req, res, next) => {
         kodikos_kataskeuasti: prod[0][0].p_code_kataskeuasti,
         texnikos_kodikos: prod[0][0].p_code_texniko,
         sintomi_per : prod[0][0].sintomi_per,
-        sintomi_per_eng : prod[0][0].sintomi_per_eng
+        sintomi_per_eng : prod[0][0].sintomi_per_eng,
+        addedToFav : prod[0][0].isFav
+
       };
     }
   }
@@ -275,7 +279,8 @@ exports.getOffers = async (req, res, next) => {
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
     sintomi_per : product[0][0].sintomi_per,
-    sintomi_per_eng:product[0][0].sintomi_per_eng
+    sintomi_per_eng:product[0][0].sintomi_per_eng,
+    addedToFav : product[0][0].isFav
   };
   res.status(200).json({
     message: "Offers",
@@ -345,7 +350,8 @@ exports.deleteOffer = async (req, res, next) => {
         kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
         texnikos_kodikos: products[0][i].p_code_texniko,
         sintomi_per : products[0][i].sintomi_per,
-        sintomi_per_eng:products[0][i].sintomi_per_eng
+        sintomi_per_eng:products[0][i].sintomi_per_eng,
+        addedToFav : products[0][i].isFav
       };
     }
     // // database.end();
@@ -496,7 +502,8 @@ exports.getSingelProduct = async (mtrl) => {
     texnikos_kodikos: product[0][0].p_code_texniko,
     qty: 1,
     sintomi_per : product[0][0].sintomi_per,
-    sintomi_per_eng:product[0][0].sintomi_per_eng
+    sintomi_per_eng:product[0][0].sintomi_per_eng,
+    addedToFav : product[0][0].isFav
   };
 
   return returnProd;
@@ -628,7 +635,8 @@ exports.getSingelCartitem = async (
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
     sintomi_per : product[0][0].sintomi_per,
-    sintomi_per : product[0][0].sintomi_per_eng
+    sintomi_per : product[0][0].sintomi_per_eng,
+    addedToFav : product[0][0].isFav
   };
 
   // console.log(returnProd);
