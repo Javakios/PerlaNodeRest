@@ -1911,15 +1911,14 @@ exports.removeThumb = (req, res, next) => {
   }
 };
 exports.getSingle = async (req, res, next) => {
-  const trdr = req.body.trdr;
-  if(!trdr) res.status(402).json({message:"fill the required fields"});
-  let prod =await database.execute('select * from singleProduct where trdr=?',[trdr]);
-
+  const mtrl = req.body.mtrl;
+  if (!mtrl) res.status(402).json({ message: "fill the required fields" });
+  else {
     res.status(200).json({
       message: "Single Product",
-      product: await this.getSingelProduct(prod[0][0].mtrl),
+      product: await this.getSingelProduct(mtrl),
     });
-  
+  }
 };
 
 exports.isFavorite = (req,res,next) =>{
@@ -1942,29 +1941,4 @@ exports.isFavorite = (req,res,next) =>{
       next(err);
     })
   }
-}
-exports.setSingle = async(req,res,next) =>{
-  const mtrl = req.body.mtrl;
-  const trdr = req.body.trdr;
-  if(!mtrl) {
-    res.status(402).json({message:"fill the required fields"});
-  }else{
-    try{
-
-    
-    let select = await database.execute('select * from singleProduct where trdr=?',[trdr])
-    if(select[0].length > 0 ){
-      let update = await database.execute('update singleProduct set mtrl=? where trdr=?',[mtrl,trdr])
-      res.status(200).json({message:"product updated"});
-    }else{
-      let insert = await database.execute('insert into singleProduct (mtrl,trdr) values (?)',[mtrl,trdr]);
-      res.status(200).json({message:"product inserted"});
-    }
-  }catch(err){
-    throw err;
-  }
-    
-
-  }
-
 }
