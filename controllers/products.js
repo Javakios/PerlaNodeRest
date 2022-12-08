@@ -1914,7 +1914,6 @@ exports.getSingle = async (req, res, next) => {
   const mtrl = req.body.mtrl;
   if (mtrl){
     res.status(200).json({
-      message: "Single Product",
       product: await this.getSingelProduct(mtrl),
     });
   
