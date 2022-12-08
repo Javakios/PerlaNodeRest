@@ -1927,7 +1927,6 @@ exports.getSingle = async (req, res, next) => {
         res.status(402).json({message:"fill the required fields"})
       }else{
           res.status(200).json({
-            message:"Geia sou nektarie patenta",
             id:id,
             name:name,
             category:category
