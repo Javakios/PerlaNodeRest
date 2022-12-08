@@ -1922,8 +1922,8 @@ exports.getSingle = async (req, res, next) => {
   else {
       const id = req.body.id;
       const name = req.body.name;
-      const category = 116;
-      if(!id || !name){
+      const category = req.body.category;
+      if(!id || !name || !category){
         res.status(402).json({message:"fill the required fields"})
       }else{
           res.status(200).json({
