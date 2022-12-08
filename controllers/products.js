@@ -1912,13 +1912,28 @@ exports.removeThumb = (req, res, next) => {
 };
 exports.getSingle = async (req, res, next) => {
   const mtrl = req.body.mtrl;
-  if (!mtrl) res.status(402).json({ message: "fill the required fields" });
-  else {
+  if (mtrl){
     res.status(200).json({
       message: "Single Product",
       product: await this.getSingelProduct(mtrl),
     });
-  }
+  
+  } 
+  else {
+      const id = req.body.id;
+      const name = req.body.name;
+      const category = 116;
+      if(!id || !name){
+        res.status(402).json({message:"fill the required fields"})
+      }else{
+          res.status(200).json({
+            message:"Geia sou nektarie patenta",
+            id:id,
+            name:name,
+            category:category
+          })
+      }
+  }  
 };
 
 exports.isFavorite = (req,res,next) =>{
