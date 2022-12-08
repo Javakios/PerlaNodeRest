@@ -32,4 +32,5 @@ router.post('/removeSinglePdf',productsController.removeSinglePdf)
 router.post('/secondaryImages',productsController.secondaryImages);
 router.post('/removeThumbnail',productsController.removeThumb)
 router.post('/getSingle',productsController.getSingle);
+router.post('/isFavorite',productsController.isFavorite);
 module.exports = router;

@@ -1912,3 +1912,25 @@ exports.getSingle = async (req, res, next) => {
     });
   }
 };
+
+exports.isFavorite = (req,res,next) =>{
+  const mtrl = req.body.mtrl;
+  const trdr = req.body.trdr;
+
+  if(!mtrl || !trdr) {
+    res.status(402).json({message:"Fill The required fields"});
+  }else{
+    database.execute('select * from favorites where p_mtrl=? and c_trdr=?',[mtrl,trdr])
+    .then(results=>{
+      if(results[0].length > 0){
+        res.status(200).json({message:"Products Exists",exists:true})
+      }else{
+        res.status(200).json({message:"Product Does not Exists",exists:false});
+      }
+    })
+    .catch(err =>{
+      if(!err.statusCode) err.statusCode =500;
+      next(err);
+    })
+  }
+}
