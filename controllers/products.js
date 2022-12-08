@@ -713,7 +713,7 @@ exports.findMosquiProduct = async (req, res, next) => {
     let width = req.query.width;
     let height = req.query.height;
     let findProd = await database.execute(
-      `SELECT * FROM products WHERE p_subcategory=${subcategory} AND color_fabric_id=${fabric} AND color_profile_id=${profile}  and (min_width < ${width} and max_width > ${width}) and (min_height < ${height} and max_height>${height})`
+      `SELECT * FROM products WHERE p_subcategory=${subcategory} AND color_fabric_id=${fabric} AND color_profile_id=${profile}  and (min_width <= ${width} and max_width >= ${width}) and (min_height <= ${height} and max_height>=${height})`
     );
     if (findProd[0].length == 0) {
       res.status(200).json({ message: "No Product Found" });
