@@ -1595,11 +1595,10 @@ exports.updateDataSheet = (req, res, next) => {
         "update products set p_data_sheet=? , data_sheet_eng=? where p_mtrl=?",
         [data_el, data_en, mtrl]
       )
-      .then((update) => {
+      .then(async(update) => {
         res.status(200).json({
           message: "Datasheet  Updated",
-          data_sheet: data_el,
-          data_sheet_eng: data_en,
+          product: await this.getSingelProduct(mtrl)
         });
       })
       .catch((err) => {
@@ -1625,11 +1624,10 @@ exports.updateDescription = (req, res, next) => {
         desc_eng,
         mtrl,
       ])
-      .then((results) => {
+      .then(async(results) => {
         res.status(200).json({
           message: "Description Updated",
-          description: desc,
-          desc_eng: desc_eng,
+          product : await this.getSingelProduct(mtrl)
         });
       })
       .catch((err) => {
@@ -1756,6 +1754,7 @@ exports.uploadVideo = (req, res, next) => {
         .then((results) => {
           res.status(200).json({
             message: "Video Deleted",
+            product : this.getSingelProduct(mtrl)
           });
         })
         .catch((err) => {
@@ -1777,7 +1776,7 @@ exports.uploadVideo = (req, res, next) => {
         .then((results) => {
           res.status(200).json({
             message: "Video uploaded Successfully",
-            video: validUrl,
+            product : this.getSingelProduct(mtrl)
           });
         })
         .catch((err) => {
