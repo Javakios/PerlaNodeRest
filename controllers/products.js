@@ -59,7 +59,8 @@ exports.getProducts = (req, res, next) => {
           texnikos_kodikos: products[0][i].p_code_texniko,
           sintomi_per : products[0][i].sintomi_per,
           sintomi_per_eng :products[0][i].sintomi_per_eng,
-          addedToFav : products[0][i].isFav
+          addedToFav : products[0][i].isFav,
+          mm :products[0][i].p_monada_metrisis
         };
       }
       // // // database.end();
@@ -128,7 +129,8 @@ exports.getProducts = (req, res, next) => {
           texnikos_kodikos: products[0][i].p_code_texniko,
           sintomi_per : products[0][i].sintomi_per,
           sintomi_per_eng :products[0][i].sintomi_per_eng,
-          addedToFav : products[0][i].isFav
+          addedToFav : products[0][i].isFav,
+          mm :products[0][i].p_monada_metrisis
         };
       }
       // // // database.end();
@@ -212,7 +214,8 @@ exports.getProductsRelated = async (req, res, next) => {
         texnikos_kodikos: prod[0][0].p_code_texniko,
         sintomi_per : prod[0][0].sintomi_per,
         sintomi_per_eng : prod[0][0].sintomi_per_eng,
-        addedToFav : prod[0][0].isFav
+        addedToFav : prod[0][0].isFav,
+        mm :prod[0][0].p_monada_metrisis
 
       };
     }
@@ -280,7 +283,8 @@ exports.getOffers = async (req, res, next) => {
     texnikos_kodikos: product[0][0].p_code_texniko,
     sintomi_per : product[0][0].sintomi_per,
     sintomi_per_eng:product[0][0].sintomi_per_eng,
-    addedToFav : product[0][0].isFav
+    addedToFav : product[0][0].isFav,
+    mm :product[0][0].p_monada_metrisis
   };
   res.status(200).json({
     message: "Offers",
@@ -351,7 +355,8 @@ exports.deleteOffer = async (req, res, next) => {
         texnikos_kodikos: products[0][i].p_code_texniko,
         sintomi_per : products[0][i].sintomi_per,
         sintomi_per_eng:products[0][i].sintomi_per_eng,
-        addedToFav : products[0][i].isFav
+        addedToFav : products[0][i].isFav,
+        mm :products[0][i].p_monada_metrisis
       };
     }
     // // database.end();
@@ -503,7 +508,8 @@ exports.getSingelProduct = async (mtrl) => {
     qty: 1,
     sintomi_per : product[0][0].sintomi_per,
     sintomi_per_eng:product[0][0].sintomi_per_eng,
-    addedToFav : product[0][0].isFav
+    addedToFav : product[0][0].isFav,
+    mm :product[0][0].p_monada_metrisis
   };
 
   return returnProd;
@@ -636,7 +642,8 @@ exports.getSingelCartitem = async (
     texnikos_kodikos: product[0][0].p_code_texniko,
     sintomi_per : product[0][0].sintomi_per,
     sintomi_per : product[0][0].sintomi_per_eng,
-    addedToFav : product[0][0].isFav
+    addedToFav : product[0][0].isFav,
+    mm :product[0][0].p_monada_metrisis
   };
 
   // console.log(returnProd);
