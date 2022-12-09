@@ -1751,10 +1751,10 @@ exports.uploadVideo = (req, res, next) => {
           "empty",
           mtrl,
         ])
-        .then((results) => {
+        .then(async(results) => {
           res.status(200).json({
             message: "Video Deleted",
-            product : this.getSingelProduct(mtrl)
+            product :await this.getSingelProduct(mtrl)
           });
         })
         .catch((err) => {
@@ -1773,10 +1773,10 @@ exports.uploadVideo = (req, res, next) => {
           validUrl,
           mtrl,
         ])
-        .then((results) => {
+        .then(async(results) => {
           res.status(200).json({
             message: "Video uploaded Successfully",
-            product : this.getSingelProduct(mtrl)
+            product :await this.getSingelProduct(mtrl)
           });
         })
         .catch((err) => {
