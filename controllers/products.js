@@ -1810,26 +1810,24 @@ exports.uploadPdfToProduct = (req, res, next) => {
   if (!mtrl || !pdfName) {
     res.status(402).json({ message: "fill the required fields" });
   } else {
-    database
-      .execute("update products set p_pdf=? where p_mtrl=?", [pdfName, mtrl])
-      .then((results) => {
-        res.status(200).json({ message: "Pdf Inserted To Product" });
-      })
-      .catch((err) => {
-        if (!err.statusCode) {
-          err.statusCode = 500;
-        }
-        next(err);
-      });
+    database.execute('select * from pdfs where mtrl=? and pdf=?',[mtrl,pdfName])
+    .then(async results=>{
+        await this.getProducts(req,res,next);
+    })
+    .catch(err=>{
+      if(!err.statusCode) err.statusCode = 500;
+      next(err);
+    })
   }
 };
 exports.removeSinglePdf = (req, res, next) => {
   const mtrl = req.body.mtrl;
-  if (!mtrl) {
+  const pdf  = req.body.pdf;
+  if (!mtrl || !pdf) {
     res.status(402).json({ message: "fill the required fields" });
   } else {
     database
-      .execute("update products set p_pdf=? where p_mtrl=?", ["empty", mtrl])
+      .execute("delete from pdfs where pdf=? and mtrl=?", [pdf, mtrl])
       .then(async (results) => {
         await this.getProducts(req, res, next);
       })
