@@ -1985,9 +1985,8 @@ exports.getPdf =async (mtrl) =>{
     let pdf = await database.execute('select * from pdfs where mtrl=?',[mtrl])
     let returnPdfs =[];
     for(let i = 0 ; i < pdf[0].length;i++){
-      returnPdfs[i] = {
-        pdf_name : pdf[0][i].name
-      }
+      returnPdfs[i].push(pdf[0][i].name)
+      
     }
     return returnPdfs
 }
