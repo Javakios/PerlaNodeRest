@@ -49,7 +49,7 @@ exports.getProducts = (req, res, next) => {
           image: products[0][i].p_image,
           otherImages: otherImages,
           description: products[0][i].p_desc,
-          pdf: products[0][i].p_pdf,
+          pdf: await this.getPdf(products[0][i].p_mtrl),
           video: products[0][i].p_yt_vid,
           data_sheet: products[0][i].p_data_sheet,
           data_sheet_eng: products[0][i].data_sheet_eng,
@@ -119,7 +119,7 @@ exports.getProducts = (req, res, next) => {
           image: products[0][i].p_image,
           otherImages: otherImages,
           description: products[0][i].p_desc,
-          pdf: products[0][i].p_pdf,
+          pdf:  await this.getPdf(products[0][i].p_mtrl),
           video: products[0][i].p_yt_vid,
           data_sheet: products[0][i].p_data_sheet,
           data_sheet_eng: products[0][i].data_sheet_eng,
@@ -204,7 +204,7 @@ exports.getProductsRelated = async (req, res, next) => {
         image: prod[0][0].p_image,
         otherImages: otherImages,
         description: prod[0][0].p_desc,
-        pdf: prod[0][0].p_pdf,
+        pdf:await this.getPdf(prod[0][0].p_mtrl),
         video: prod[0][0].p_yt_vid,
         data_sheet: prod[0][0].p_data_sheet,
         data_sheet_eng: prod[0][0].data_sheet_eng,
@@ -273,7 +273,7 @@ exports.getOffers = async (req, res, next) => {
     image: product[0][0].p_image,
     otherImages: otherImages,
     description: product[0][0].p_desc,
-    pdf: product[0][0].p_pdf,
+    pdf: await this.getPdf(product[0][0].p_mtrl),
     video: product[0][0].p_yt_vid,
     data_sheet: product[0][0].p_data_sheet,
     data_sheet_eng: product[0][0].data_sheet_eng,
@@ -345,7 +345,7 @@ exports.deleteOffer = async (req, res, next) => {
         img: products[0][i].p_image,
         otherImages: otherImages,
         description: products[0][i].p_desc,
-        pdf: products[0][i].p_pdf,
+        pdf:await this.getPdf(products[0][i].p_mtrl),
         video: products[0][i].p_yt_vid,
         data_sheet: products[0][i].p_data_sheet,
         data_sheet_eng: products[0][i].data_sheet_eng,
@@ -497,7 +497,7 @@ exports.getSingelProduct = async (mtrl) => {
     image: product[0][0].p_image,
     otherImages: otherImages,
     description: product[0][0].p_desc,
-    pdf: product[0][0].p_pdf,
+    pdf:await this.getPdf(product[0][0].p_mtrl),
     video: product[0][0].p_yt_vid,
     data_sheet: product[0][0].p_data_sheet,
     data_sheet_eng: product[0][0].data_sheet_eng,
@@ -632,7 +632,7 @@ exports.getSingelCartitem = async (
     image: product[0][0].p_image,
     otherImages: otherImages,
     description: product[0][0].p_desc,
-    pdf: product[0][0].p_pdf,
+    pdf: await this.getPdf(product[0][0].p_mtrl),
     video: product[0][0].p_yt_vid,
     data_sheet: product[0][0].p_data_sheet,
     data_sheet_eng: product[0][0].data_sheet_eng,
@@ -1976,4 +1976,15 @@ exports.isFavorite = (req,res,next) =>{
       next(err);
     })
   }
+}
+
+exports.getPdf =async (mtrl) =>{
+    let pdf = await database.execute('select * from pdfs where mtrl=?',[mtrl])
+    let returnPdfs =[];
+    for(let i = 0 ; i < pdf[0].length;i++){
+      returnPdfs[i] = {
+        pdf_name : pdf[0][i].name
+      }
+    }
+    return returnPdfs
 }
