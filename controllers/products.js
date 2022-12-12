@@ -1814,8 +1814,10 @@ exports.uploadPdfToProduct = (req, res, next) => {
     .then(async results=>{
       if(results[0].length == 0){
         let update = await database.execute('insert into pdfs (pdf,mtrl) VALUES(?,?)',[pdfName,mtrl]);
-      }
+        await this.getProducts(req,res,next);
+      }else{
       await this.getProducts(req,res,next);
+      }
     })
     .catch(err=>{
       if(!err.statusCode) err.statusCode = 500;
