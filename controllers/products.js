@@ -981,6 +981,21 @@ exports.addToCart = async (req, res, next) => {
               `select price from timi_ana_pelati_eidos where trdr=${trdr} and mtrl = ${mtrl}`
             );
             wholesale = new_price[0][0].price;
+            database
+          .execute(
+            `insert into products_cart(p_mtrl,p_trdr,p_code,p_name,p_name1,p_img,p_category,p_qty,p_retail,p_wholesale,p_stock,p_disc,group_id) values(${mtrl},${trdr},'${code}','${name}','${name1}','${img}',${category},${qty},${retail},${wholesale},${stock},${discound},${group_id})`
+          )
+          .then((results) => {
+            res.status(200).json({
+              message: "Product added successfully",
+            });
+          })
+          .catch((err) => {
+            if (!err.statusCode) {
+              err.statusCode = 500;
+            }
+            next(err);
+          });
           }
         } else {
           if (trdr == "444") {
@@ -1340,6 +1355,7 @@ exports.addToCart = async (req, res, next) => {
       }
     }
   }
+  
   if (bad) {
     res.status(402).json({ message: "Fill The Required Fields" });
   }
