@@ -1813,7 +1813,7 @@ exports.uploadPdfToProduct = (req, res, next) => {
     database.execute('select * from pdfs where mtrl=? and pdf=?',[mtrl,pdfName])
     .then(async results=>{
       if(results[0].length == 0){
-        let update = await database.execute('insert into pdfs (pdf,mtrl) VALUES(?,?)',[pdf,mtrl]);
+        let update = await database.execute('insert into pdfs (pdf,mtrl) VALUES(?,?)',[pdfName,mtrl]);
       }
       await this.getProducts(req,res,next);
     })
