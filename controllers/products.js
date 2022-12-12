@@ -1812,7 +1812,10 @@ exports.uploadPdfToProduct = (req, res, next) => {
   } else {
     database.execute('select * from pdfs where mtrl=? and pdf=?',[mtrl,pdfName])
     .then(async results=>{
-        await this.getProducts(req,res,next);
+      if(results[0].length == 0){
+        let update = await database.execute('insert into pdfs (pdf,mtrl) VALUES(?,?)',[pdf,mtrl]);
+      }
+      await this.getProducts(req,res,next);
     })
     .catch(err=>{
       if(!err.statusCode) err.statusCode = 500;
