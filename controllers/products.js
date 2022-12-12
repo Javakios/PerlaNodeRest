@@ -1984,10 +1984,9 @@ exports.isFavorite = (req,res,next) =>{
 exports.getPdf =async (mtrl) =>{
     let pdf = await database.execute('select * from pdfs where mtrl=?',[mtrl])
     let returnPdfs =[];
+    console.log(pdf[0])
     for(let i = 0 ; i < pdf[0].length;i++){
-      returnPdfs[i] = {
-        pdf_name : pdf[0][i].name
-      }
+      returnPdfs.push(pdf[0][i].pdf)
     }
     return returnPdfs
 }
