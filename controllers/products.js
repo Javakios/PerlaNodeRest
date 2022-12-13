@@ -2230,6 +2230,7 @@ exports.getSub = async (sub) => {
         data_sheet_eng: "",
         video: "",
         otherImages: "",
+        pdf:""
       };
     }
   } catch (err) {
