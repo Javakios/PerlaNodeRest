@@ -32,6 +32,9 @@ router.post('/removeSinglePdf',productsController.removeSinglePdf)
 router.post('/secondaryImages',productsController.secondaryImages);
 router.post('/removeThumbnail',productsController.removeThumb)
 router.post('/getSingle',productsController.getSingle);
-
+router.post('/editMosquiSub',productsController.editMosquiDesc)
+router.post('/editMosquiDataSheet',productsController.editMosquiDataSheet);
+router.post('/editMosquiUrl',productsController.editMosquiUrl);
+router.post('/editMosquiImage',productsController.editMosquiImage);
 router.post('/isFavorite',productsController.isFavorite);
 module.exports = router;

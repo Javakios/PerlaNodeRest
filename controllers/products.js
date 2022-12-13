@@ -3,148 +3,150 @@ const database = require("../db");
 // Get All Products
 exports.getProducts = (req, res, next) => {
   const sub_cat_id = req.query.sub_cat_id;
-  if(sub_cat_id){
+  if (sub_cat_id) {
     database
-    .execute("SELECT * FROM products where p_subcategory=? order by onoma_product  ASC",[sub_cat_id])
-    .then(async (products) => {
-      hasOffer = false;
-      let returnProds = [];
-      let homeOffer = false;
-      for (let i = 0; i < products[0].length; i++) {
-        if (products[0][i].p_wholesale_price != products[0][i].p_offer)
-          hasOffer = true;
-        else hasOffer = false;
-        let homePageOffer = await database.execute(
-          `SELECT * FROM products_offer WHERE product_mtrl= ${products[0][i].p_mtrl}`
-        );
-        let images = await database.execute(
-          `SELECT * FROM product_images WHERE p_mtrl=${products[0][i].p_mtrl}`
-        );
-        let otherImages = [];
-        for (let i = 0; i < images[0].length; i++) {
-          otherImages[i] = {
-            img: images[0][i].p_image,
+      .execute(
+        "SELECT * FROM products where p_subcategory=? order by onoma_product  ASC",
+        [sub_cat_id]
+      )
+      .then(async (products) => {
+        hasOffer = false;
+        let returnProds = [];
+        let homeOffer = false;
+        for (let i = 0; i < products[0].length; i++) {
+          if (products[0][i].p_wholesale_price != products[0][i].p_offer)
+            hasOffer = true;
+          else hasOffer = false;
+          let homePageOffer = await database.execute(
+            `SELECT * FROM products_offer WHERE product_mtrl= ${products[0][i].p_mtrl}`
+          );
+          let images = await database.execute(
+            `SELECT * FROM product_images WHERE p_mtrl=${products[0][i].p_mtrl}`
+          );
+          let otherImages = [];
+          for (let i = 0; i < images[0].length; i++) {
+            otherImages[i] = {
+              img: images[0][i].p_image,
+            };
+          }
+          if (homePageOffer[0].length != 0) homeOffer = true;
+          else homeOffer = false;
+          returnProds[i] = {
+            mtrl: products[0][i].p_mtrl,
+            omada: products[0][i].p_omada,
+            name: products[0][i].p_name,
+            name1: products[0][i].p_name1,
+            retail: products[0][i].p_retail_price.toFixed(2),
+            wholesale: products[0][i].p_wholesale_price.toFixed(2),
+            offer: products[0][i].p_offer.toFixed(2),
+            hasOffer: hasOffer,
+            homePageOffer: homeOffer,
+            discount: products[0][i].p_dicount,
+            code: products[0][i].p_kod,
+            description_eng: products[0][i].p_desc_eng,
+            stock: products[0][i].p_stock,
+            diathesima: products[0][i].p_diathesima,
+            desmeumena: products[0][i].p_desmeumena,
+            category: products[0][i].p_category,
+            subcategory: products[0][i].p_subcategory,
+            image: products[0][i].p_image,
+            otherImages: otherImages,
+            description: products[0][i].p_desc,
+            pdf: await this.getPdf(products[0][i].p_mtrl),
+            video: products[0][i].p_yt_vid,
+            data_sheet: products[0][i].p_data_sheet,
+            data_sheet_eng: products[0][i].data_sheet_eng,
+            product_name: products[0][i].onoma_product,
+            product_name_eng: products[0][i].onoma_product_eng,
+            kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
+            texnikos_kodikos: products[0][i].p_code_texniko,
+            sintomi_per: products[0][i].sintomi_per,
+            sintomi_per_eng: products[0][i].sintomi_per_eng,
+            addedToFav: products[0][i].isFav,
+            mm: products[0][i].p_monada_metrisis,
           };
         }
-        if (homePageOffer[0].length != 0) homeOffer = true;
-        else homeOffer = false;
-        returnProds[i] = {
-          mtrl: products[0][i].p_mtrl,
-          omada: products[0][i].p_omada,
-          name: products[0][i].p_name,
-          name1: products[0][i].p_name1,
-          retail: products[0][i].p_retail_price.toFixed(2),
-          wholesale: products[0][i].p_wholesale_price.toFixed(2),
-          offer: products[0][i].p_offer.toFixed(2),
-          hasOffer: hasOffer,
-          homePageOffer: homeOffer,
-          discount: products[0][i].p_dicount,
-          code: products[0][i].p_kod,
-          description_eng: products[0][i].p_desc_eng,
-          stock: products[0][i].p_stock,
-          diathesima: products[0][i].p_diathesima,
-          desmeumena: products[0][i].p_desmeumena,
-          category: products[0][i].p_category,
-          subcategory: products[0][i].p_subcategory,
-          image: products[0][i].p_image,
-          otherImages: otherImages,
-          description: products[0][i].p_desc,
-          pdf: await this.getPdf(products[0][i].p_mtrl),
-          video: products[0][i].p_yt_vid,
-          data_sheet: products[0][i].p_data_sheet,
-          data_sheet_eng: products[0][i].data_sheet_eng,
-          product_name: products[0][i].onoma_product,
-          product_name_eng: products[0][i].onoma_product_eng,
-          kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
-          texnikos_kodikos: products[0][i].p_code_texniko,
-          sintomi_per : products[0][i].sintomi_per,
-          sintomi_per_eng :products[0][i].sintomi_per_eng,
-          addedToFav : products[0][i].isFav,
-          mm :products[0][i].p_monada_metrisis
-        };
-      }
-      // // // database.end();
-      res.status(200).json({
-        message: "All Products",
-        products: returnProds,
+        // // // database.end();
+        res.status(200).json({
+          message: "All Products",
+          products: returnProds,
+        });
+      })
+      .catch((err) => {
+        if (!err.statusCode) err.statusCode = 500;
+        next(err);
       });
-    })
-    .catch((err) => {
-      if (!err.statusCode) err.statusCode = 500;
-      next(err);
-    });
-  }else{
+  } else {
     database
-    .execute("SELECT * FROM products order by onoma_product ASC")
-    .then(async (products) => {
-      hasOffer = false;
-      let returnProds = [];
-      let homeOffer = false;
-      for (let i = 0; i < products[0].length; i++) {
-        if (products[0][i].p_wholesale_price != products[0][i].p_offer)
-          hasOffer = true;
-        else hasOffer = false;
-        let homePageOffer = await database.execute(
-          `SELECT * FROM products_offer WHERE product_mtrl= ${products[0][i].p_mtrl}`
-        );
-        let images = await database.execute(
-          `SELECT * FROM product_images WHERE p_mtrl=${products[0][i].p_mtrl}`
-        );
-        let otherImages = [];
-        for (let i = 0; i < images[0].length; i++) {
-          otherImages[i] = {
-            img: images[0][i].p_image,
+      .execute("SELECT * FROM products order by onoma_product ASC")
+      .then(async (products) => {
+        hasOffer = false;
+        let returnProds = [];
+        let homeOffer = false;
+        for (let i = 0; i < products[0].length; i++) {
+          if (products[0][i].p_wholesale_price != products[0][i].p_offer)
+            hasOffer = true;
+          else hasOffer = false;
+          let homePageOffer = await database.execute(
+            `SELECT * FROM products_offer WHERE product_mtrl= ${products[0][i].p_mtrl}`
+          );
+          let images = await database.execute(
+            `SELECT * FROM product_images WHERE p_mtrl=${products[0][i].p_mtrl}`
+          );
+          let otherImages = [];
+          for (let i = 0; i < images[0].length; i++) {
+            otherImages[i] = {
+              img: images[0][i].p_image,
+            };
+          }
+          if (homePageOffer[0].length != 0) homeOffer = true;
+          else homeOffer = false;
+          returnProds[i] = {
+            mtrl: products[0][i].p_mtrl,
+            omada: products[0][i].p_omada,
+            name: products[0][i].p_name,
+            name1: products[0][i].p_name1,
+            retail: products[0][i].p_retail_price.toFixed(2),
+            wholesale: products[0][i].p_wholesale_price.toFixed(2),
+            offer: products[0][i].p_offer.toFixed(2),
+            hasOffer: hasOffer,
+            homePageOffer: homeOffer,
+            discount: products[0][i].p_dicount,
+            code: products[0][i].p_kod,
+            description_eng: products[0][i].p_desc_eng,
+            stock: products[0][i].p_stock,
+            diathesima: products[0][i].p_diathesima,
+            desmeumena: products[0][i].p_desmeumena,
+            category: products[0][i].p_category,
+            subcategory: products[0][i].p_subcategory,
+            image: products[0][i].p_image,
+            otherImages: otherImages,
+            description: products[0][i].p_desc,
+            pdf: await this.getPdf(products[0][i].p_mtrl),
+            video: products[0][i].p_yt_vid,
+            data_sheet: products[0][i].p_data_sheet,
+            data_sheet_eng: products[0][i].data_sheet_eng,
+            onoma: products[0][i].onoma_product,
+            onoma_eng: products[0][i].onoma_product_eng,
+            kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
+            texnikos_kodikos: products[0][i].p_code_texniko,
+            sintomi_per: products[0][i].sintomi_per,
+            sintomi_per_eng: products[0][i].sintomi_per_eng,
+            addedToFav: products[0][i].isFav,
+            mm: products[0][i].p_monada_metrisis,
           };
         }
-        if (homePageOffer[0].length != 0) homeOffer = true;
-        else homeOffer = false;
-        returnProds[i] = {
-          mtrl: products[0][i].p_mtrl,
-          omada: products[0][i].p_omada,
-          name: products[0][i].p_name,
-          name1: products[0][i].p_name1,
-          retail: products[0][i].p_retail_price.toFixed(2),
-          wholesale: products[0][i].p_wholesale_price.toFixed(2),
-          offer: products[0][i].p_offer.toFixed(2),
-          hasOffer: hasOffer,
-          homePageOffer: homeOffer,
-          discount: products[0][i].p_dicount,
-          code: products[0][i].p_kod,
-          description_eng: products[0][i].p_desc_eng,
-          stock: products[0][i].p_stock,
-          diathesima: products[0][i].p_diathesima,
-          desmeumena: products[0][i].p_desmeumena,
-          category: products[0][i].p_category,
-          subcategory: products[0][i].p_subcategory,
-          image: products[0][i].p_image,
-          otherImages: otherImages,
-          description: products[0][i].p_desc,
-          pdf:  await this.getPdf(products[0][i].p_mtrl),
-          video: products[0][i].p_yt_vid,
-          data_sheet: products[0][i].p_data_sheet,
-          data_sheet_eng: products[0][i].data_sheet_eng,
-          onoma: products[0][i].onoma_product,
-          onoma_eng: products[0][i].onoma_product_eng,
-          kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
-          texnikos_kodikos: products[0][i].p_code_texniko,
-          sintomi_per : products[0][i].sintomi_per,
-          sintomi_per_eng :products[0][i].sintomi_per_eng,
-          addedToFav : products[0][i].isFav,
-          mm :products[0][i].p_monada_metrisis
-        };
-      }
-      // // // database.end();
-      res.status(200).json({
-        message: "All Products",
-        products: returnProds,
+        // // // database.end();
+        res.status(200).json({
+          message: "All Products",
+          products: returnProds,
+        });
+      })
+      .catch((err) => {
+        if (!err.statusCode) err.statusCode = 500;
+        next(err);
       });
-    })
-    .catch((err) => {
-      if (!err.statusCode) err.statusCode = 500;
-      next(err);
-    });
   }
- 
 };
 
 // Get All Products Related
@@ -204,7 +206,7 @@ exports.getProductsRelated = async (req, res, next) => {
         image: prod[0][0].p_image,
         otherImages: otherImages,
         description: prod[0][0].p_desc,
-        pdf:await this.getPdf(prod[0][0].p_mtrl),
+        pdf: await this.getPdf(prod[0][0].p_mtrl),
         video: prod[0][0].p_yt_vid,
         data_sheet: prod[0][0].p_data_sheet,
         data_sheet_eng: prod[0][0].data_sheet_eng,
@@ -212,11 +214,10 @@ exports.getProductsRelated = async (req, res, next) => {
         onoma_eng: prod[0][0].onoma_product_eng,
         kodikos_kataskeuasti: prod[0][0].p_code_kataskeuasti,
         texnikos_kodikos: prod[0][0].p_code_texniko,
-        sintomi_per : prod[0][0].sintomi_per,
-        sintomi_per_eng : prod[0][0].sintomi_per_eng,
-        addedToFav : prod[0][0].isFav,
-        mm :prod[0][0].p_monada_metrisis
-
+        sintomi_per: prod[0][0].sintomi_per,
+        sintomi_per_eng: prod[0][0].sintomi_per_eng,
+        addedToFav: prod[0][0].isFav,
+        mm: prod[0][0].p_monada_metrisis,
       };
     }
   }
@@ -281,10 +282,10 @@ exports.getOffers = async (req, res, next) => {
     product_name_eng: product[0][0].onoma_product_eng,
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
-    sintomi_per : product[0][0].sintomi_per,
-    sintomi_per_eng:product[0][0].sintomi_per_eng,
-    addedToFav : product[0][0].isFav,
-    mm :product[0][0].p_monada_metrisis
+    sintomi_per: product[0][0].sintomi_per,
+    sintomi_per_eng: product[0][0].sintomi_per_eng,
+    addedToFav: product[0][0].isFav,
+    mm: product[0][0].p_monada_metrisis,
   };
   res.status(200).json({
     message: "Offers",
@@ -345,7 +346,7 @@ exports.deleteOffer = async (req, res, next) => {
         img: products[0][i].p_image,
         otherImages: otherImages,
         description: products[0][i].p_desc,
-        pdf:await this.getPdf(products[0][i].p_mtrl),
+        pdf: await this.getPdf(products[0][i].p_mtrl),
         video: products[0][i].p_yt_vid,
         data_sheet: products[0][i].p_data_sheet,
         data_sheet_eng: products[0][i].data_sheet_eng,
@@ -353,10 +354,10 @@ exports.deleteOffer = async (req, res, next) => {
         product_name_eng: products[0][i].onoma_product_eng,
         kodikos_kataskeuasti: products[0][i].p_code_kataskeuasti,
         texnikos_kodikos: products[0][i].p_code_texniko,
-        sintomi_per : products[0][i].sintomi_per,
-        sintomi_per_eng:products[0][i].sintomi_per_eng,
-        addedToFav : products[0][i].isFav,
-        mm :products[0][i].p_monada_metrisis
+        sintomi_per: products[0][i].sintomi_per,
+        sintomi_per_eng: products[0][i].sintomi_per_eng,
+        addedToFav: products[0][i].isFav,
+        mm: products[0][i].p_monada_metrisis,
       };
     }
     // // database.end();
@@ -497,7 +498,7 @@ exports.getSingelProduct = async (mtrl) => {
     image: product[0][0].p_image,
     otherImages: otherImages,
     description: product[0][0].p_desc,
-    pdf:await this.getPdf(product[0][0].p_mtrl),
+    pdf: await this.getPdf(product[0][0].p_mtrl),
     video: product[0][0].p_yt_vid,
     data_sheet: product[0][0].p_data_sheet,
     data_sheet_eng: product[0][0].data_sheet_eng,
@@ -506,10 +507,10 @@ exports.getSingelProduct = async (mtrl) => {
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
     qty: 1,
-    sintomi_per : product[0][0].sintomi_per,
-    sintomi_per_eng:product[0][0].sintomi_per_eng,
-    addedToFav : product[0][0].isFav,
-    mm :product[0][0].p_monada_metrisis
+    sintomi_per: product[0][0].sintomi_per,
+    sintomi_per_eng: product[0][0].sintomi_per_eng,
+    addedToFav: product[0][0].isFav,
+    mm: product[0][0].p_monada_metrisis,
   };
 
   return returnProd;
@@ -615,7 +616,7 @@ exports.getSingelCartitem = async (
     name: product[0][0].p_name,
     name1: product[0][0].p_name1,
     retail: product[0][0].p_retail_price.toFixed(2),
-    wholesale:  wholesale.toFixed(2),
+    wholesale: wholesale.toFixed(2),
     offer: product[0][0].p_offer.toFixed(2),
     hasOffer: hasOffer,
     homePageOffer: homeOffer,
@@ -640,10 +641,10 @@ exports.getSingelCartitem = async (
     product_name_eng: product[0][0].onoma_product_eng,
     kodikos_kataskeuasti: product[0][0].p_code_kataskeuasti,
     texnikos_kodikos: product[0][0].p_code_texniko,
-    sintomi_per : product[0][0].sintomi_per,
-    sintomi_per : product[0][0].sintomi_per_eng,
-    addedToFav : product[0][0].isFav,
-    mm :product[0][0].p_monada_metrisis
+    sintomi_per: product[0][0].sintomi_per,
+    sintomi_per: product[0][0].sintomi_per_eng,
+    addedToFav: product[0][0].isFav,
+    mm: product[0][0].p_monada_metrisis,
   };
 
   // console.log(returnProd);
@@ -982,20 +983,20 @@ exports.addToCart = async (req, res, next) => {
             );
             wholesale = new_price[0][0].price;
             database
-          .execute(
-            `insert into products_cart(p_mtrl,p_trdr,p_code,p_name,p_name1,p_img,p_category,p_qty,p_retail,p_wholesale,p_stock,p_disc,group_id) values(${mtrl},${trdr},'${code}','${name}','${name1}','${img}',${category},${qty},${retail},${wholesale},${stock},${discound},${group_id})`
-          )
-          .then((results) => {
-            res.status(200).json({
-              message: "Product added successfully",
-            });
-          })
-          .catch((err) => {
-            if (!err.statusCode) {
-              err.statusCode = 500;
-            }
-            next(err);
-          });
+              .execute(
+                `insert into products_cart(p_mtrl,p_trdr,p_code,p_name,p_name1,p_img,p_category,p_qty,p_retail,p_wholesale,p_stock,p_disc,group_id) values(${mtrl},${trdr},'${code}','${name}','${name1}','${img}',${category},${qty},${retail},${wholesale},${stock},${discound},${group_id})`
+              )
+              .then((results) => {
+                res.status(200).json({
+                  message: "Product added successfully",
+                });
+              })
+              .catch((err) => {
+                if (!err.statusCode) {
+                  err.statusCode = 500;
+                }
+                next(err);
+              });
           }
         } else {
           if (trdr == "444") {
@@ -1355,7 +1356,7 @@ exports.addToCart = async (req, res, next) => {
       }
     }
   }
-  
+
   if (bad) {
     res.status(402).json({ message: "Fill The Required Fields" });
   }
@@ -1611,10 +1612,10 @@ exports.updateDataSheet = (req, res, next) => {
         "update products set p_data_sheet=? , data_sheet_eng=? where p_mtrl=?",
         [data_el, data_en, mtrl]
       )
-      .then(async(update) => {
+      .then(async (update) => {
         res.status(200).json({
           message: "Datasheet  Updated",
-          product: await this.getSingelProduct(mtrl)
+          product: await this.getSingelProduct(mtrl),
         });
       })
       .catch((err) => {
@@ -1640,10 +1641,10 @@ exports.updateDescription = (req, res, next) => {
         desc_eng,
         mtrl,
       ])
-      .then(async(results) => {
+      .then(async (results) => {
         res.status(200).json({
           message: "Description Updated",
-          product : await this.getSingelProduct(mtrl)
+          product: await this.getSingelProduct(mtrl),
         });
       })
       .catch((err) => {
@@ -1767,10 +1768,10 @@ exports.uploadVideo = (req, res, next) => {
           "empty",
           mtrl,
         ])
-        .then(async(results) => {
+        .then(async (results) => {
           res.status(200).json({
             message: "Video Deleted",
-            product :await this.getSingelProduct(mtrl)
+            product: await this.getSingelProduct(mtrl),
           });
         })
         .catch((err) => {
@@ -1789,10 +1790,10 @@ exports.uploadVideo = (req, res, next) => {
           validUrl,
           mtrl,
         ])
-        .then(async(results) => {
+        .then(async (results) => {
           res.status(200).json({
             message: "Video uploaded Successfully",
-            product :await this.getSingelProduct(mtrl)
+            product: await this.getSingelProduct(mtrl),
           });
         })
         .catch((err) => {
@@ -1810,24 +1811,28 @@ exports.uploadPdfToProduct = (req, res, next) => {
   if (!mtrl || !pdfName) {
     res.status(402).json({ message: "fill the required fields" });
   } else {
-    database.execute('select * from pdfs where mtrl=? and pdf=?',[mtrl,pdfName])
-    .then(async results=>{
-      if(results[0].length == 0){
-        let update = await database.execute('insert into pdfs (pdf,mtrl) VALUES(?,?)',[pdfName,mtrl]);
-        await this.getProducts(req,res,next);
-      }else{
-      await this.getProducts(req,res,next);
-      }
-    })
-    .catch(err=>{
-      if(!err.statusCode) err.statusCode = 500;
-      next(err);
-    })
+    database
+      .execute("select * from pdfs where mtrl=? and pdf=?", [mtrl, pdfName])
+      .then(async (results) => {
+        if (results[0].length == 0) {
+          let update = await database.execute(
+            "insert into pdfs (pdf,mtrl) VALUES(?,?)",
+            [pdfName, mtrl]
+          );
+          await this.getProducts(req, res, next);
+        } else {
+          await this.getProducts(req, res, next);
+        }
+      })
+      .catch((err) => {
+        if (!err.statusCode) err.statusCode = 500;
+        next(err);
+      });
   }
 };
 exports.removeSinglePdf = (req, res, next) => {
   const mtrl = req.body.mtrl;
-  const pdf  = req.body.pdf;
+  const pdf = req.body.pdf;
   if (!mtrl || !pdf) {
     res.status(402).json({ message: "fill the required fields" });
   } else {
@@ -1937,56 +1942,353 @@ exports.removeThumb = (req, res, next) => {
 };
 exports.getSingle = async (req, res, next) => {
   const mtrl = req.body.mtrl;
-  if (mtrl){
+  if (mtrl) {
     res.status(200).json({
       product: await this.getSingelProduct(mtrl),
     });
-  
-  } 
-  else {
-      const id = req.body.id;
-      const name = req.body.name;
-      const category = req.body.category;
-      if(!id || !name || !category){
-        res.status(402).json({message:"fill the required fields"})
-      }else{
-          res.status(200).json({
-            id:id,
-            name:name,
-            category:category
-          })
-      }
-  }  
+  } else {
+    const id = req.body.id;
+    const name = req.body.name;
+    const category = req.body.category;
+    if (!id || !name || !category) {
+      res.status(402).json({ message: "fill the required fields" });
+    } else {
+      res.status(200).json({
+        id: id,
+        name: name,
+        category: category,
+      });
+    }
+  }
 };
 
-exports.isFavorite = (req,res,next) =>{
+exports.isFavorite = (req, res, next) => {
   const mtrl = req.body.mtrl;
   const trdr = req.body.trdr;
 
-  if(!mtrl || !trdr) {
-    res.status(402).json({message:"Fill The required fields"});
-  }else{
-    database.execute('select * from favorites where p_mtrl=? and c_trdr=?',[mtrl,trdr])
-    .then(results=>{
-      if(results[0].length > 0){
-        res.status(200).json({message:"Products Exists",exists:true})
-      }else{
-        res.status(200).json({message:"Product Does not Exists",exists:false});
-      }
-    })
-    .catch(err =>{
-      if(!err.statusCode) err.statusCode =500;
-      next(err);
-    })
+  if (!mtrl || !trdr) {
+    res.status(402).json({ message: "Fill The required fields" });
+  } else {
+    database
+      .execute("select * from favorites where p_mtrl=? and c_trdr=?", [
+        mtrl,
+        trdr,
+      ])
+      .then((results) => {
+        if (results[0].length > 0) {
+          res.status(200).json({ message: "Products Exists", exists: true });
+        } else {
+          res
+            .status(200)
+            .json({ message: "Product Does not Exists", exists: false });
+        }
+      })
+      .catch((err) => {
+        if (!err.statusCode) err.statusCode = 500;
+        next(err);
+      });
   }
-}
+};
 
-exports.getPdf =async (mtrl) =>{
-    let pdf = await database.execute('select * from pdfs where mtrl=?',[mtrl])
-    let returnPdfs =[];
-    console.log(pdf[0])
-    for(let i = 0 ; i < pdf[0].length;i++){
-      returnPdfs.push(pdf[0][i].pdf)
+exports.getPdf = async (mtrl) => {
+  let pdf = await database.execute("select * from pdfs where mtrl=?", [mtrl]);
+  let returnPdfs = [];
+  console.log(pdf[0]);
+  for (let i = 0; i < pdf[0].length; i++) {
+    returnPdfs.push(pdf[0][i].pdf);
+  }
+  return returnPdfs;
+};
+exports.editMosquiImage = (req, res, next) => {
+  const image = req.body.image;
+  const sub_cat_id = req.body.sub_cat_id;
+
+  if (!image || !sub_cat_id) {
+    res.status(200).json({ message: "fill the required fields" });
+  } else {
+    database
+      .execute("select * from subcategories_data where sub_cat_id=?", [
+        sub_cat_id,
+      ])
+      .then(async (results) => {
+        if (results[0].length > 0) {
+          let update = await database.execute(
+            "update subcategories_data set image=? where sub_cat_id=?",
+            [image, sub_cat_id]
+          );
+          res
+            .status(200)
+            .json({
+              message: "Image Updated",
+              subcategory: await this.getSub(sub_cat_id),
+            });
+        }else{
+          let insert = await database.execute('insert into subcategories_data (sub_cat_id,image) VALUES (?,?)',[sub_cat_id,image])
+          res
+            .status(200)
+            .json({
+              message: "Image Inserted",
+              subcategory: await this.getSub(sub_cat_id),
+            });
+        }
+      })
+      .catch((err) => {
+        if (!err.statusCode) err.statusCode = 500;
+        next(err);
+      });
+  }
+};
+exports.editMosquiUrl = (req, res, next) => {
+  const url = req.body.url;
+  const sub_cat_id = req.body.sub_cat_id;
+  let host = url.split("/");
+  if (!url || !sub_cat_id) {
+    res.status(402).json({ message: "fill the required fields" });
+  } else {
+    if (req.body.method || host[2] != "www.youtube.com") {
+      database
+        .execute("update subcategories_data set url =? where sub_cat_id=?", [
+          "empty",
+          sub_cat_id,
+        ])
+        .then(async (results) => {
+          res.status(200).json({
+            message: "Video Deleted",
+            subcategory: await this.getSub(sub_cat_id),
+          });
+        })
+        .catch((err) => {
+          if (!err.statusCode) err.statusCode = 500;
+          next(err);
+        });
+    } else {
+      let validUrl = req.body.url.replace("watch?", "embed/");
+      validUrl = validUrl.replace("v=", "");
+      validUrl = validUrl.split("&");
+      validUrl = validUrl[0];
+
+      database
+        .execute("select * from subcategories_data where sub_cat_id=?", [
+          sub_cat_id,
+        ])
+        .then(async (results) => {
+          if (results[0].length > 0) {
+            let update = await database.execute(
+              "update subcategories_data set url=? where sub_cat_id=?",
+              [validUrl, sub_cat_id]
+            );
+            res.status(200).json({
+              message: "Video Updated",
+              subcategory: await this.getSub(sub_cat_id),
+            });
+          } else {
+            let insert = await database.execute(
+              "isnert into subcategories_data (url,sub_cat_id) VALUES (?,?)",
+              [validUrl, sub_cat_id]
+            );
+            res.status(200).json({
+              message: "Video Inserted",
+              subcategory: await this.getSub(sub_cat_id),
+            });
+          }
+        });
     }
-    return returnPdfs
-}
+  }
+};
+
+exports.editMosquiDataSheet = (req, res, next) => {
+  const data_sheet = req.body.data_sheet;
+  const data_sheet_eng = req.body.data_sheet_eng;
+  const sub_cat_id = req.body.sub_cat_id;
+
+  if (!data_sheet || !data_sheet_eng || !sub_cat_id) {
+    res.status(402).json({ message: "fill the required fields" });
+  } else {
+    database
+      .execute("select * from subcategories_data where sub_cat_id = ?", [
+        sub_cat_id,
+      ])
+      .then(async (results) => {
+        if (results[0].length > 0) {
+          let update = await database.execute(
+            "update subcategories_data set data_sheet=?,data_sheet_eng=? where sub_cat_id=?",
+            [data_sheet, data_sheet_eng, sub_cat_id]
+          );
+          res.status(200).json({
+            message: "Data Sheet Updated",
+            subcategory: await this.getSub(sub_cat_id),
+          });
+        } else {
+          let insert = await database.execute(
+            "insert into subcategories_data (data_sheet,data_sheet_eng,sub_cat_id) VALUES (?,?,?)",
+            [data_sheet, data_sheet_eng, sub_cat_id]
+          );
+          res.status(200).json({
+            message: "Data Sheet Inserted",
+            subcategory: await this.getSub(sub_cat_id),
+          });
+        }
+      })
+      .catch((err) => {
+        if (!err.statusCode) err.statusCode = 500;
+        next(err);
+      });
+  }
+};
+exports.editMosquiDesc = (req, res, next) => {
+  const desc = req.body.desc;
+  const desc_eng = req.body.desc_eng;
+  const sub_cat_id = req.body.sub_cat_id;
+
+  if (!desc || !desc_eng || !sub_cat_id) {
+    res.status(200).json({ message: "fill the requried fields" });
+  } else {
+    database
+      .execute("select * from subcategories_data where sub_cat_id = ?", [
+        sub_cat_id,
+      ])
+      .then(async (results) => {
+        if (results[0].length > 0) {
+          // update
+          let update = await database.execute(
+            "update subcategories_data set description=?,description_eng=? where sub_cat_id=?",
+            [desc, desc_eng, sub_cat_id]
+          );
+          console.log(await this.getSub(sub_cat_id));
+          res.status(200).json({
+            message: "Description Updated",
+            subcategory: await this.getSub(sub_cat_id),
+          });
+        } else {
+          // isnert
+          let insert = await database.execute(
+            "insert into subcategories_data(description,description_eng,sub_cat_id) VALUES(?,?,?)",
+            [desc, desc_eng, sub_cat_id]
+          );
+          res.status(200).json({
+            message: "Description Inserted",
+            subcategory: await this.getSub(sub_cat_id),
+          });
+        }
+      })
+      .catch((err) => {
+        if (!err.statusCode) err.statusCode = 500;
+        next(err);
+      });
+  }
+};
+exports.getSub = async (sub) => {
+  let subs = await database.execute(
+    "select * from subcategories where sub_id = ?",
+    [sub]
+  );
+
+  return {
+    sub_id: subs[0][0].sub_id,
+    sub_name: subs[0][0].sub_name,
+    sub_name_eng: subs[0][0].sub_name_eng,
+    description: await this.getDescription(sub),
+    description_eng: await this.getDescriptionEng(sub),
+    image: await this.getImage(sub),
+    data_sheet: await this.getDataSheet(sub),
+    data_sheet_eng: await this.getDataSheetEng(sub),
+    url: await this.getUrl(sub),
+  };
+};
+
+exports.getDescription = async (id) => {
+  let desc = await database.execute(
+    "select description from subcategories_data where sub_cat_id = ?",
+    [id]
+  );
+  try {
+    if (desc[0].length > 0) {
+      return desc[0][0].description;
+    } else {
+      return "";
+    }
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    throw err;
+  }
+};
+exports.getDescriptionEng = async (id) => {
+  let desc = await database.execute(
+    "select description_eng from subcategories_data where sub_cat_id = ?",
+    [id]
+  );
+  try {
+    if (desc[0].length > 0) {
+      return desc[0][0].description_eng;
+    } else {
+      return "";
+    }
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    throw err;
+  }
+};
+exports.getImage = async (id) => {
+  let desc = await database.execute(
+    "select image from subcategories_data where sub_cat_id = ?",
+    [id]
+  );
+  try {
+    if (desc[0].length > 0) {
+      return desc[0][0].image;
+    } else {
+      return "";
+    }
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    throw err;
+  }
+};
+exports.getDataSheet = async (id) => {
+  let desc = await database.execute(
+    "select data_sheet from subcategories_data where sub_cat_id = ?",
+    [id]
+  );
+  try {
+    if (desc[0].length > 0) {
+      return desc[0][0].data_sheet;
+    } else {
+      return "";
+    }
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    throw err;
+  }
+};
+exports.getDataSheetEng = async (id) => {
+  let desc = await database.execute(
+    "select data_sheet_eng from subcategories_data where sub_cat_id = ?",
+    [id]
+  );
+  try {
+    if (desc[0].length > 0) {
+      return desc[0][0].data_sheet_eng;
+    } else {
+      return "";
+    }
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    throw err;
+  }
+};
+exports.getUrl = async (id) => {
+  let desc = await database.execute(
+    "select url from subcategories_data where sub_cat_id = ?",
+    [id]
+  );
+  try {
+    if (desc[0].length > 0) {
+      return desc[0][0].url;
+    } else {
+      return "";
+    }
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    throw err;
+  }
+};
