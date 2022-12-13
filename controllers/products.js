@@ -2292,3 +2292,13 @@ exports.getUrl = async (id) => {
     throw err;
   }
 };
+exports.getSubcategory = async (req,res,next) =>{
+  const sub_cat_id = req.body.sub_cat_id;
+  if(!sub_cat_id) res.status(402).json({message:"fill the requried fields"});
+  else{
+    res.status(200).json({
+      message:"subcategory",
+      subcategory : await this.getSub(sub_cat_id)
+    })
+  }
+}
