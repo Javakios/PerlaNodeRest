@@ -2464,3 +2464,15 @@ exports.editMosquiPdfs = async (req, res, next) => {
       });
   }
 };
+
+exports.getMosquiCat = (req,res,next) =>{
+  database
+  .execute("select * from subcategories where cat_id=116")
+  .then(async (results) => {
+    let returnSubCat = [];
+    for(let i = 0 ; i < results[0].length ; i++){
+      returnSubCat[i] = await this.getSub(results[0][i].sub_id);
+    }
+    res.status(200).json({message:"All Mosqui+",subcategories: returnSubCat});
+  })
+}
