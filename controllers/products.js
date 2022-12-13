@@ -2202,7 +2202,9 @@ exports.getSub = async (sub) => {
     "select * from subcategories where sub_id = ?",
     [sub]
   );
+  if(subs[0].length > 0 ){
 
+  
   return {
     sub_id: subs[0][0].sub_id,
     sub_name: subs[0][0].sub_name,
@@ -2212,9 +2214,23 @@ exports.getSub = async (sub) => {
     image: await this.getImage(sub),
     data_sheet: await this.getDataSheet(sub),
     data_sheet_eng: await this.getDataSheetEng(sub),
-    url: await this.getUrl(sub),
+    video: await this.getUrl(sub),
     otherImages: await this.getOtherMosquiImages(sub),
-  };
+  }
+
+
+  }else{
+    return {
+      sub_id: "",  sub_name:"" ,    sub_name_eng:"" ,
+      description:"",
+      description_eng:"",
+      image:"",
+      data_sheet:"",
+      data_sheet_eng:"",
+      video:"",
+      otherImages:"",
+  }
+}
 };
 exports.removeOtherImages = (req, res, next) => {
   const sub_cat_id = req.body.sub_cat_id;
