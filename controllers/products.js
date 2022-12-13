@@ -2212,7 +2212,7 @@ exports.getSub = async (sub) => {
     image: await this.getImage(sub),
     data_sheet: await this.getDataSheet(sub),
     data_sheet_eng: await this.getDataSheetEng(sub),
-    video: await this.getUrl(sub),
+    url: await this.getUrl(sub),
     otherImages: await this.getOtherMosquiImages(sub),
   };
 };
@@ -2388,6 +2388,6 @@ exports.todb = (req, res, next) => {
 //     res.status(402).json({ message: "fill the required fields" });
 //   } else {
 //       let pdfArray = this.fromStringToArray(pdf);
-//       for(let i =)
+//       for(let)
 //   }
 // };
