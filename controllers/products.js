@@ -2212,7 +2212,7 @@ exports.getSub = async (sub) => {
     image: await this.getImage(sub),
     data_sheet: await this.getDataSheet(sub),
     data_sheet_eng: await this.getDataSheetEng(sub),
-    url: await this.getUrl(sub),
+    video: await this.getUrl(sub),
     otherImages: await this.getOtherMosquiImages(sub),
   };
 };
@@ -2229,12 +2229,10 @@ exports.removeOtherImages = (req, res, next) => {
         [sub_cat_id, image_name]
       )
       .then(async (results) => {
-        res
-          .status(200)
-          .json({
-            message: "Image Removed",
-            subcategory: await this.getSub(sub_cat_id)
-          });
+        res.status(200).json({
+          message: "Image Removed",
+          subcategory: await this.getSub(sub_cat_id),
+        });
       })
       .catch((err) => {
         if (!err.statusCode) err.statusCode = 500;
@@ -2381,3 +2379,15 @@ exports.todb = (req, res, next) => {
       res.status(200).json({ message: "OK" });
     });
 };
+
+// exports.editMosquiPdfs = (req, res, next) => {
+//   const sub_cat_id = req.body.sub_cat_id;
+//   const pdf = req.body.pdf;
+
+//   if (!sub_cat_id || !pdf) {
+//     res.status(402).json({ message: "fill the required fields" });
+//   } else {
+//       let pdfArray = this.fromStringToArray(pdf);
+//       for(let i =)
+//   }
+// };
