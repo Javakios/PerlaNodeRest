@@ -2202,37 +2202,63 @@ exports.getSub = async (sub) => {
     "select * from subcategories where sub_id = ?",
     [sub]
   );
-  try{
-  if (subs[0].length > 0) {
-    return {
-      sub_id: subs[0][0].sub_id,
-      sub_name: subs[0][0].sub_name,
-      sub_name_eng: subs[0][0].sub_name_eng,
-      description: await this.getDescription(sub),
-      description_eng: await this.getDescriptionEng(sub),
-      image: await this.getImage(sub),
-      data_sheet: await this.getDataSheet(sub),
-      data_sheet_eng: await this.getDataSheetEng(sub),
-      video: await this.getUrl(sub),
-      otherImages: await this.getOtherMosquiImages(sub),
-    };
-  } else {
-    return {
-      sub_id: "",
-      sub_name: "",
-      sub_name_eng: "",
-      description: "",
-      description_eng: "",
-      image: "",
-      data_sheet: "",
-      data_sheet_eng: "",
-      video: "",
-      otherImages: "",
-    };
-  }
-  }catch(err){
+  try {
+    console.log(subs[0]);
+    if (subs[0].length > 0) {
+      return {
+        sub_id: subs[0][0].sub_id,
+        sub_name: subs[0][0].sub_name,
+        sub_name_eng: subs[0][0].sub_name_eng,
+        description: await this.getDescription(sub),
+        description_eng: await this.getDescriptionEng(sub),
+        image: await this.getImage(sub),
+        data_sheet: await this.getDataSheet(sub),
+        data_sheet_eng: await this.getDataSheetEng(sub),
+        video: await this.getUrl(sub),
+        otherImages: await this.getOtherMosquiImages(sub),
+        pdf: await this.getPdfs(sub),
+      };
+    } else {
+      return {
+        sub_id: "",
+        sub_name: "",
+        sub_name_eng: "",
+        description: "",
+        description_eng: "",
+        image: "",
+        data_sheet: "",
+        data_sheet_eng: "",
+        video: "",
+        otherImages: "",
+      };
+    }
+  } catch (err) {
     throw err;
-}
+  }
+};
+exports.removePdf = (req, res, next) => {
+  const sub_cat_id = req.body.sub_cat_id;
+  const pdf = req.body.pdf;
+
+  if (!sub_cat_id || !pdf) {
+    res.status(402).json({ message: "fill the requried fields" });
+  } else {
+    database
+      .execute("delete from subcategories_pdf where sub_cat_id=? and pdf=?", [
+        sub_cat_id,
+        pdf,
+      ])
+      .then(async(results) => {
+        res.status(200).json({
+          message:'Pdf Removed',
+          subcategory : await this.getSub(sub_cat_id)
+        })
+      })
+      .catch((err) => {
+        if (!err.statusCode) err.statusCode = 500;
+        next(err);
+      });
+  }
 };
 exports.removeOtherImages = (req, res, next) => {
   const sub_cat_id = req.body.sub_cat_id;
@@ -2258,6 +2284,23 @@ exports.removeOtherImages = (req, res, next) => {
       });
   }
 };
+exports.getPdfs = async (sub) => {
+  let pdf = await database.execute(
+    "select * from subcategories_pdf where sub_cat_id =?",
+    [sub]
+  );
+  try {
+    let pdfs = [];
+    for (let i = 0; i < pdf[0].length; i++) {
+      pdfs[i] = {
+        name: pdf[0][i].pdf,
+      };
+    }
+    return pdfs;
+  } catch (err) {
+    throw err;
+  }
+};
 exports.getOtherMosquiImages = async (sub) => {
   let images = await database.execute(
     "select * from subcategories_otherimages where sub_cat_id=?",
@@ -2269,8 +2312,8 @@ exports.getOtherMosquiImages = async (sub) => {
       otherImages[i] = {
         image: images[0][i].image,
       };
-      return otherImages;
     }
+    return otherImages;
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     throw err;
@@ -2398,14 +2441,25 @@ exports.todb = (req, res, next) => {
     });
 };
 
-// exports.editMosquiPdfs = (req, res, next) => {
-//   const sub_cat_id = req.body.sub_cat_id;
-//   const pdf = req.body.pdf;
+exports.editMosquiPdfs = async (req, res, next) => {
+  const sub_cat_id = req.body.sub_cat_id;
+  const pdf = req.body.pdf;
 
-//   if (!sub_cat_id || !pdf) {
-//     res.status(402).json({ message: "fill the required fields" });
-//   } else {
-//       let pdfArray = this.fromStringToArray(pdf);
-//       for(let)
-//   }
-// };
+  if (!sub_cat_id || !pdf) {
+    res.status(402).json({ message: "fill the required fields" });
+  } else {
+    let pdfArray = this.fromStringToArray(pdf);
+    for (let i = 0; i < pdfArray.length; i++) {
+      let insert = await database.execute(
+        "isnert into subcategories_pdf (sub_cat_id,pdf) VALUES",
+        [sub_cat_id, pdfArray[i]]
+      );
+    }
+    res
+      .status(200)
+      .json({
+        message: "pdf uploaded",
+        subcategory: await this.getSub(sub_cat_id),
+      });
+  }
+};

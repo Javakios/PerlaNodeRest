@@ -40,5 +40,7 @@ router.post('/isFavorite',productsController.isFavorite);
 router.post('/getSubcategory',productsController.getSubcategory);
 router.post('/editMosquiOtherImages',productsController.editMosquiOtherImages);
 router.post('/removeOtherImages',productsController.removeOtherImages);
+router.post('/removePdf',productsController.removePdf);
+router.post('/editMosquiPdfs',productsController.editMosquiPdfs);
 // router.post('/lala',productsController.todb);
 module.exports = router;
