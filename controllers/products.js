@@ -2135,6 +2135,21 @@ exports.editMosquiDataSheet = (req, res, next) => {
       });
   }
 };
+exports.editMosquiOtherImages = async (req,res,next) =>{
+
+  const sub_cat_id = req.body.sub_cat_id;
+  const images = req.body.images;
+
+  if(!sub_cat_id || !images){
+    res.status(402).json({message:"fill the required fields"});
+  }else{
+    let imagesArray = this.fromStringToArray(images);
+    for(let i = 0; i<imagesArray.length;i++){
+      let insert = await database.execute('insert into subcategories_otherimages (sub_cat_id,image) VALUES(?,?)',[sub_cat_id,imagesArray[i]]);
+
+    }
+  }
+}
 exports.editMosquiDesc = (req, res, next) => {
   const desc = req.body.desc;
   const desc_eng = req.body.desc_eng;
@@ -2301,4 +2316,15 @@ exports.getSubcategory = async (req,res,next) =>{
       subcategory : await this.getSub(sub_cat_id)
     })
   }
+}
+
+exports.todb = (req,res,next) =>{
+
+  database.execute('select * from subcategories where cat_id=116')
+  .then(async results=>{
+      for(let i = 0 ; i < results[0].length;i++){
+        let insert = await database.execute('insert into subcategories_data (sub_cat_id) VALUES(?)',[results[0][i].sub_id]);
+      }
+      res.json({message:"OK"})
+  })
 }

@@ -38,4 +38,5 @@ router.post('/editMosquiUrl',productsController.editMosquiUrl);
 router.post('/editMosquiImage',productsController.editMosquiImage);
 router.post('/isFavorite',productsController.isFavorite);
 router.post('/getSubcategory',productsController.getSubcategory);
+router.post('/lala',productsController.todb);
 module.exports = router;
