@@ -1,3 +1,4 @@
+const e = require("express");
 const database = require("../db");
 
 // Get All Products
@@ -2016,20 +2017,19 @@ exports.editMosquiImage = (req, res, next) => {
             "update subcategories_data set image=? where sub_cat_id=?",
             [image, sub_cat_id]
           );
-          res
-            .status(200)
-            .json({
-              message: "Image Updated",
-              subcategory: await this.getSub(sub_cat_id),
-            });
-        }else{
-          let insert = await database.execute('insert into subcategories_data (sub_cat_id,image) VALUES (?,?)',[sub_cat_id,image])
-          res
-            .status(200)
-            .json({
-              message: "Image Inserted",
-              subcategory: await this.getSub(sub_cat_id),
-            });
+          res.status(200).json({
+            message: "Image Updated",
+            subcategory: await this.getSub(sub_cat_id),
+          });
+        } else {
+          let insert = await database.execute(
+            "insert into subcategories_data (sub_cat_id,image) VALUES (?,?)",
+            [sub_cat_id, image]
+          );
+          res.status(200).json({
+            message: "Image Inserted",
+            subcategory: await this.getSub(sub_cat_id),
+          });
         }
       })
       .catch((err) => {
@@ -2135,21 +2135,26 @@ exports.editMosquiDataSheet = (req, res, next) => {
       });
   }
 };
-exports.editMosquiOtherImages = async (req,res,next) =>{
-
+exports.editMosquiOtherImages = async (req, res, next) => {
   const sub_cat_id = req.body.sub_cat_id;
   const images = req.body.images;
 
-  if(!sub_cat_id || !images){
-    res.status(402).json({message:"fill the required fields"});
-  }else{
+  if (!sub_cat_id || !images) {
+    res.status(402).json({ message: "fill the required fields" });
+  } else {
     let imagesArray = this.fromStringToArray(images);
-    for(let i = 0; i<imagesArray.length;i++){
-      let insert = await database.execute('insert into subcategories_otherimages (sub_cat_id,image) VALUES(?,?)',[sub_cat_id,imagesArray[i]]);
-
+    for (let i = 0; i < imagesArray.length; i++) {
+      let insert = await database.execute(
+        "insert into subcategories_otherimages (sub_cat_id,image) VALUES(?,?)",
+        [sub_cat_id, imagesArray[i]]
+      );
     }
+    res.status(200).json({
+      message: "Images Inserted",
+      subcategory: await this.getSub(sub_cat_id),
+    });
   }
-}
+};
 exports.editMosquiDesc = (req, res, next) => {
   const desc = req.body.desc;
   const desc_eng = req.body.desc_eng;
@@ -2208,9 +2213,53 @@ exports.getSub = async (sub) => {
     data_sheet: await this.getDataSheet(sub),
     data_sheet_eng: await this.getDataSheetEng(sub),
     url: await this.getUrl(sub),
+    otherImages: await this.getOtherMosquiImages(sub),
   };
 };
+exports.removeOtherImages = (req, res, next) => {
+  const sub_cat_id = req.body.sub_cat_id;
+  const image_name = req.body.image;
 
+  if (!sub_cat_id || !image_name) {
+    res.status(402).json({ message: "fill the required fields" });
+  } else {
+    database
+      .execute(
+        "delete from subcategories_otherimages where sub_cat_id=? and image=?",
+        [sub_cat_id, image_name]
+      )
+      .then(async (results) => {
+        res
+          .status(200)
+          .json({
+            message: "Image Removed",
+            subcategory: await this.getSub(sub_cat_id)
+          });
+      })
+      .catch((err) => {
+        if (!err.statusCode) err.statusCode = 500;
+        next(err);
+      });
+  }
+};
+exports.getOtherMosquiImages = async (sub) => {
+  let images = await database.execute(
+    "select * from subcategories_otherimages where sub_cat_id=?",
+    [sub]
+  );
+  try {
+    let otherImages = [];
+    for (let i = 0; i < images[0].length; i++) {
+      otherImages[i] = {
+        image: images[0][i].image,
+      };
+      return otherImages;
+    }
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    throw err;
+  }
+};
 exports.getDescription = async (id) => {
   let desc = await database.execute(
     "select description from subcategories_data where sub_cat_id = ?",
@@ -2307,24 +2356,28 @@ exports.getUrl = async (id) => {
     throw err;
   }
 };
-exports.getSubcategory = async (req,res,next) =>{
+exports.getSubcategory = async (req, res, next) => {
   const sub_cat_id = req.body.sub_cat_id;
-  if(!sub_cat_id) res.status(402).json({message:"fill the requried fields"});
-  else{
+  if (!sub_cat_id)
+    res.status(402).json({ message: "fill the requried fields" });
+  else {
     res.status(200).json({
-      message:"subcategory",
-      subcategory : await this.getSub(sub_cat_id)
-    })
+      message: "subcategory",
+      subcategory: await this.getSub(sub_cat_id),
+    });
   }
-}
+};
 
-exports.todb = (req,res,next) =>{
-
-  database.execute('select * from subcategories where cat_id=116')
-  .then(async results=>{
-      for(let i = 0 ; i < results[0].length;i++){
-        let insert = await database.execute('insert into subcategories_data (sub_cat_id) VALUES(?)',[results[0][i].sub_id]);
+exports.todb = (req, res, next) => {
+  database
+    .execute("select * from subcategories where cat_id=116")
+    .then(async (results) => {
+      for (let i = 0; i < results[0].length; i++) {
+        let insert = await database.execute(
+          "insert into subcategories_data (sub_cat_id) VALUES(?)",
+          [results[0][i].sub_id]
+        );
       }
-      res.json({message:"OK"})
-  })
-}
+      res.status(200).json({ message: "OK" });
+    });
+};
