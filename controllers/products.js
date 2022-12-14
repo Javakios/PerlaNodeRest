@@ -1,3 +1,4 @@
+const { json } = require("body-parser");
 const e = require("express");
 const database = require("../db");
 
@@ -2475,4 +2476,28 @@ exports.getMosquiCat = (req,res,next) =>{
     }
     res.status(200).json({message:"All Mosqui+",subcategories: returnSubCat});
   })
+  .catch(err=>{
+    if(!err.statusCode) err.statusCode =500;
+    next(err);
+  })
+}
+
+exports.removeThumbMosqui = (req,res,next) =>{
+
+  const sub_cat_id = req.body.sub_cat_id;
+
+  if(!sub_cat_id){
+    res.status(402).json({message:"fill the required fields"});
+  }else{
+      database
+      .execute('update subcategories_data set image=? where sub_cat_id=?',['https://perlarest.vinoitalia.gr/php-auth-api/images.png',sub_cat_id])
+        .then(updateResults =>{
+           this.getMosquiCat(req,res,next);
+        })
+        .catch(err=>{
+          if(!err.statusCode) err.statusCode=500;
+          next(err);
+        })
+  }
+
 }

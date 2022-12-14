@@ -43,5 +43,6 @@ router.post('/removeOtherImages',productsController.removeOtherImages);
 router.post('/removePdf',productsController.removePdf);
 router.post('/editMosquiPdfs',productsController.editMosquiPdfs);
 router.post('/getAllMosquiCat',productsController.getMosquiCat);
+router.post('/removeMosquiThumb',productsController.removeThumbMosqui);
 // router.post('/lala',productsController.todb);
 module.exports = router;
