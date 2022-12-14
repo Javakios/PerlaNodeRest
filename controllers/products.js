@@ -2450,13 +2450,12 @@ exports.editMosquiPdfs = async (req, res, next) => {
   if (!sub_cat_id || !pdf) {
     res.status(402).json({ message: "fill the required fields" });
   } else {
-    let pdfArray = this.fromStringToArray(pdf);
-    for (let i = 0; i < pdfArray.length; i++) {
+   
       let insert = await database.execute(
         "insert into subcategories_pdf (sub_cat_id,pdf) VALUES(?,?)",
-        [sub_cat_id, pdfArray[i]]
+        [sub_cat_id, pdf]
       );
-    }
+    
     res
       .status(200)
       .json({
