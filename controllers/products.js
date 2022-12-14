@@ -2453,7 +2453,7 @@ exports.editMosquiPdfs = async (req, res, next) => {
     let pdfArray = this.fromStringToArray(pdf);
     for (let i = 0; i < pdfArray.length; i++) {
       let insert = await database.execute(
-        "isnert into subcategories_pdf (sub_cat_id,pdf) VALUES",
+        "isnert into subcategories_pdf (sub_cat_id,pdf) VALUES(?,?)",
         [sub_cat_id, pdfArray[i]]
       );
     }
