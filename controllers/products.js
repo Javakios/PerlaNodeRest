@@ -1424,7 +1424,7 @@ exports.search = async (req, res, next) => {
     } else {
       database
         .execute(
-          `select * from products where p_kod like '%${search}%'  or p_name like '%${search}%'`
+          `select * from products where p_kod like '%${search}%'  or p_name like '%${search}%' and p_category !=116`
         )
         .then(async (results) => {
           let returnprod = [];
@@ -2145,6 +2145,7 @@ exports.editMosquiOtherImages = async (req, res, next) => {
   } else {
     let imagesArray = this.fromStringToArray(images);
     for (let i = 0; i < imagesArray.length; i++) {
+      console.log(imagesArray[i]);
       let insert = await database.execute(
         "insert into subcategories_otherimages (sub_cat_id,image) VALUES(?,?)",
         [sub_cat_id, imagesArray[i]]
