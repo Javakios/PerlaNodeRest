@@ -1424,7 +1424,7 @@ exports.search = async (req, res, next) => {
     } else {
       database
         .execute(
-          `select * from products where p_kod like '%${search}%'  or p_name like '%${search}%' and p_category !=116`
+          `select * from products where (p_kod like '%${search}%'  or p_name like '%${search}%') and p_category!=116`
         )
         .then(async (results) => {
           let returnprod = [];
