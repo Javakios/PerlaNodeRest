@@ -622,7 +622,7 @@ exports.getSingelCartitem = async (
     offer: product[0][0].p_offer.toFixed(2),
     hasOffer: hasOffer,
     homePageOffer: homeOffer,
-    qty: qty,
+    qty: +qty,
     discount: discount,
     group_id: group_id,
     code: product[0][0].p_kod,
