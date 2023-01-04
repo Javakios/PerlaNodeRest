@@ -66,6 +66,7 @@ exports.getProducts = (req, res, next) => {
             sintomi_per_eng: products[0][i].sintomi_per_eng,
             addedToFav: products[0][i].isFav,
             mm: products[0][i].p_monada_metrisis,
+            anamenomena:products[0][i].anamenomena
           };
         }
         // // // database.end();
@@ -136,6 +137,7 @@ exports.getProducts = (req, res, next) => {
             sintomi_per_eng: products[0][i].sintomi_per_eng,
             addedToFav: products[0][i].isFav,
             mm: products[0][i].p_monada_metrisis,
+            anamenomena:products[0][i].anamenomena
           };
         }
         // // // database.end();
@@ -220,6 +222,7 @@ exports.getProductsRelated = async (req, res, next) => {
         sintomi_per_eng: prod[0][0].sintomi_per_eng,
         addedToFav: prod[0][0].isFav,
         mm: prod[0][0].p_monada_metrisis,
+        anamenomena:prod[0][0].anamenomena
       };
     }
   }
@@ -288,6 +291,7 @@ exports.getOffers = async (req, res, next) => {
     sintomi_per_eng: product[0][0].sintomi_per_eng,
     addedToFav: product[0][0].isFav,
     mm: product[0][0].p_monada_metrisis,
+    anamenomena:product[0][0].anamenomena
   };
   res.status(200).json({
     message: "Offers",
@@ -360,6 +364,7 @@ exports.deleteOffer = async (req, res, next) => {
         sintomi_per_eng: products[0][i].sintomi_per_eng,
         addedToFav: products[0][i].isFav,
         mm: products[0][i].p_monada_metrisis,
+        anamenomena:products[0][i].anamenomena
       };
     }
     // // database.end();
@@ -513,6 +518,7 @@ exports.getSingelProduct = async (mtrl) => {
     sintomi_per_eng: product[0][0].sintomi_per_eng,
     addedToFav: product[0][0].isFav,
     mm: product[0][0].p_monada_metrisis,
+    anamenomena:product[0][0].anamenomena
   };
 
   return returnProd;
@@ -647,6 +653,7 @@ exports.getSingelCartitem = async (
     sintomi_per: product[0][0].sintomi_per_eng,
     addedToFav: product[0][0].isFav,
     mm: product[0][0].p_monada_metrisis,
+    anamenomena:product[0][0].anamenomena
   };
 
   // console.log(returnProd);
